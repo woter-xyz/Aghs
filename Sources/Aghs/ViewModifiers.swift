@@ -30,8 +30,7 @@ import SwiftUI
 
 extension View {
   
-  @ViewBuilder
-  func `if`(
+  @ViewBuilder func `if`(
     _ condition: () -> Bool,
     apply transform: (Self) -> some View,
     else elseTransform: ((Self) -> some View)? = nil
@@ -40,6 +39,17 @@ extension View {
       transform(self)
     } else {
       elseTransform?(self)
+    }
+  }
+  
+  @ViewBuilder func ifLet<V>(
+    _ value: V?,
+    apply transform: (Self, V) -> some View
+  ) -> some View {
+    if let value {
+      transform(self, value)
+    } else {
+      self
     }
   }
 }
