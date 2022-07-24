@@ -30,6 +30,12 @@ import SwiftUI
 
 extension View {
   
+  /// Transfrom according to different conditions.
+  /// - Parameters:
+  ///   - condition: A `true` or `false` condition.
+  ///   - transform: Apply when `condition` return `true`.
+  ///   - elseTransform: Apply when `condition` return `false`.
+  /// - Returns: Transformed view.
   @ViewBuilder func `if`(
     _ condition: () -> Bool,
     apply transform: (Self) -> some View,
@@ -42,6 +48,11 @@ extension View {
     }
   }
   
+  /// Transform according to an optional value that could be unwrapped or not.
+  /// - Parameters:
+  ///   - value: An optional value.
+  ///   - transform: Apply when `value` has some value.
+  /// - Returns: Transformed view.
   @ViewBuilder func ifLet<V>(
     _ value: V?,
     apply transform: (Self, V) -> some View
