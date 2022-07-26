@@ -28,7 +28,7 @@
 import Foundation
 import SwiftUI
 
-extension View {
+public extension View {
   
   /// Transfrom according to different conditions.
   /// - Parameters:
