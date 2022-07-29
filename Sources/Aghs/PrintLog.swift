@@ -1,5 +1,5 @@
 //
-//  TaskExtensions.swift
+//  PrintLog.swift
 //  
 //
 //  Created by zzzwco on 2022/7/29.
@@ -27,8 +27,25 @@
 
 import Foundation
 
-public extension Task where Success == Never, Failure == Never {
-  static func sleep(seconds: Double) async throws {
-    try await Task.sleep(nanoseconds: UInt64(seconds * 1_000_000_000))
-  }
+
+public enum PrintType: String {
+  case `default` = "🍺🍺🍺"
+  case warning = "⚠️⚠️⚠️"
+  case error = "❌❌❌"
+}
+
+/// Print in debug mode.
+public func printLog<T>(
+  _ msg: T...,
+  printType: PrintType = .default,
+  file: String = #file,
+  method: String = #function,
+  line: Int = #line
+) {
+#if DEBUG
+  let msg = msg.map { "\($0)\n" }.joined()
+  let content = "\(Date()) \((file as NSString).lastPathComponent)[\(line)], \(method): \n\(msg)\n"
+  let rawValue = printType.rawValue
+  print("\(rawValue) \(content)")
+#endif
 }
