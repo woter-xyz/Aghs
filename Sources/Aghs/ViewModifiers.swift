@@ -33,6 +33,14 @@ import SwiftUI
 public extension View {
   
   /// Transfrom view according to different conditions.
+  ///
+  /// > Warning:
+  /// Avoid using this modifier whenever possible.
+  /// As it will break identity of view and cause unexpected issues,
+  /// such as bad animation, poor performance, etc.
+  ///
+  /// Learn about SwiftUI Identity: [Demystify SwiftUI](https://developer.apple.com/videos/play/wwdc2021/10022/)
+  /// 
   /// - Parameters:
   ///   - condition: A `true` or `false` value.
   ///   - transform: Apply when `condition` is `true`.
