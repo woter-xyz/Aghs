@@ -28,23 +28,30 @@
 import Foundation
 import SwiftUI
 
+
+
 public extension View {
   
-  /// Transfrom according to different conditions.
+  /// Transfrom view according to different conditions.
   /// - Parameters:
-  ///   - condition: A `true` or `false` condition.
-  ///   - transform: Apply when `condition` return `true`.
-  ///   - elseTransform: Apply when `condition` return `false`.
-  /// - Returns: Transformed view.
-  @ViewBuilder func `if`(
-    _ condition: () -> Bool,
-    apply transform: (Self) -> some View,
-    else elseTransform: ((Self) -> some View)? = nil
+  ///   - condition: A `true` or `false` value.
+  ///   - transform: Apply when `condition` is `true`.
+  ///   - elseTransform: Apply when `condition` is `false`.
+  ///     If it's nil, return self.
+  /// - Returns: The original or transformed view.
+  @ViewBuilder func `if`<Content: View>(
+    _ condition: Bool,
+    apply transform: (Self) -> Content,
+    else elseTransform: ((Self) -> Content)? = nil
   ) -> some View {
-    if condition() {
+    if condition {
       transform(self)
     } else {
-      elseTransform?(self)
+      if let elseTransform {
+        elseTransform(self)
+      } else {
+        self
+      }
     }
   }
   
