@@ -1,8 +1,8 @@
 //
-//  TaskExtensions.swift
+//  CGFloatExtensions.swift
 //  
 //
-//  Created by zzzwco on 2022/7/29.
+//  Created by zzzwco on 2022/11/11.
 //
 //  Copyright (c) 2021 zzzwco <zzzwco@outlook.com>
 //
@@ -26,11 +26,19 @@
 //
 
 import Foundation
+import SwiftUI
 
-public extension Task where Success == Never, Failure == Never {
+public extension CGFloat {
   
-  /// Sleep in seconds.
-  static func sleep(seconds: Double) async throws {
-    try await Task.sleep(nanoseconds: UInt64(seconds * 1_000_000_000))
+  /// Rational width with referWidth.
+  /// - Parameter referWidth: Default is 375.
+  func widthRatio(_ referWidth: CGFloat = 375.0) -> CGFloat {
+    return UIScreen.width * self / referWidth
+  }
+  
+  /// Rational height with referHeight.
+  /// - Parameter referHeight: Default is 812.
+  func heightRatio(_ referHeight: CGFloat = 812.0) -> CGFloat {
+    return UIScreen.height * self / referHeight
   }
 }
