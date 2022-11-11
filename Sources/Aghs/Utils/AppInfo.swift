@@ -1,5 +1,5 @@
 //
-//  IntExtensions.swift
+//  AppInfo.swift
 //  
 //
 //  Created by zzzwco on 2022/11/11.
@@ -26,21 +26,15 @@
 //
 
 import Foundation
-import SwiftUI
 
-public extension Int {
+public struct AppInfo {
   
-  #if canImport(UIKit)
-  /// Rational width with referWidth.
-  /// - Parameter referWidth: Default is 375.
-  func widthRatio(_ referWidth: CGFloat = 375.0) -> CGFloat {
-    return CGFloat(self).widthRatio(referWidth)
-  }
+  public static let displayName =
+  Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String
   
-  /// Rational height with referHeight.
-  /// - Parameter referHeight: Default is 812.
-  func heightRatio(_ referHeight: CGFloat = 812.0) -> CGFloat {
-    return CGFloat(self).heightRatio(referHeight)
-  }
-  #endif
+  public static let version =
+  Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+  
+  public static let buildVersion =
+  Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
 }
