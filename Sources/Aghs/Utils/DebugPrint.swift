@@ -1,5 +1,5 @@
 //
-//  Print.swift
+//  DebugPrint.swift
 //  
 //
 //  Created by zzzwco on 2022/11/11.
@@ -34,11 +34,15 @@ public enum PrintType: String {
 }
 
 public func printLog<T>(
-  message: T..., file: String = #file, method: String = #function,
-  line: Int = #line, printType: PrintType = .default
+  _ msg: T...,
+  printType: PrintType = .default,
+  file: String = #file,
+  method: String = #function,
+  line: Int = #line
 ) {
   #if DEBUG
-  let content = "\(Date()) \((file as NSString).lastPathComponent)[\(line)], \(method): \n\(message)\n"
+  let msg = msg.map { "\($0)\n" }.joined()
+  let content = "\(Date()) \((file as NSString).lastPathComponent)[\(line)], \(method): \n\(msg)\n"
   let rawValue = printType.rawValue
   print("\(rawValue) \(content)")
   #endif
