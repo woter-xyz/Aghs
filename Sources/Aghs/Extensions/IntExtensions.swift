@@ -30,6 +30,7 @@ import SwiftUI
 
 public extension Int {
   
+  #if canImport(UIKit)
   /// Rational width with referWidth.
   /// - Parameter referWidth: Default is 375.
   func widthRatio(_ referWidth: CGFloat = 375.0) -> CGFloat {
@@ -41,4 +42,5 @@ public extension Int {
   func heightRatio(_ referHeight: CGFloat = 812.0) -> CGFloat {
     return CGFloat(self).heightRatio(referHeight)
   }
+  #endif
 }

@@ -28,6 +28,7 @@
 import Foundation
 import SwiftUI
 
+#if canImport(UIKit)
 public extension UIScreen {
   
   /// Get screen width.
@@ -36,4 +37,5 @@ public extension UIScreen {
   /// Get screen height.
   static let height = UIScreen.main.bounds.height
 }
+#endif
 
