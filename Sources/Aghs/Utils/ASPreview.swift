@@ -60,7 +60,7 @@ public enum ASPreviewDevices: String {
   case iPhone_13_Pro_Max = "iPhone 13 Pro Max"
   case iPhone_13_mini = "iPhone 13 mini"
   case iPhone_13 = "iPhone 13"
-  case iPhone_SE = "iPhone SE"
+  case iPhone_SE_3rd_generation = "iPhone SE (3rd generation)"
   case iPhone_14 = "iPhone 14"
   case iPhone_14_Plus = "iPhone 14 Plus"
   case iPhone_14_Pro = "iPhone 14 Pro"
