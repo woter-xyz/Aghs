@@ -84,7 +84,7 @@ public extension AxBoxable {
 
 extension NSObject: AxBoxable {}
 
-extension View {
+public extension View {
   
   var ax: AxBox<some View> {
     AxBox(self)
