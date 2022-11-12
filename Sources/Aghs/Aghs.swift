@@ -37,6 +37,13 @@ import SwiftUI
 /// ```
 public struct Aghs {}
 
+public extension Aghs {
+  
+  /// A storage bag for package itself that makes using `Aghs` enjoyable.
+  /// There's no need to use it.
+  struct Bag {}
+}
+
 
 /// Source of **ax**.
 ///

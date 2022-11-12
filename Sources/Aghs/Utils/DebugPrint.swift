@@ -29,6 +29,7 @@ import Foundation
 
 public extension Aghs {
   
+  /// Print in debug mode.
   static func print<T>(
     _ msg: T...,
     symbol: String = "🍺🍺🍺",

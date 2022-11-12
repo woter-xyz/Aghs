@@ -29,35 +29,23 @@ import SwiftUI
 
 public extension Aghs {
   
-  struct Preview<C: View>: View {
-    
-    private let preView: C
-    private let devices: [PreviewDevices]
-    private var viewName: String
-    
-    public init(
-      _ preView: C,
-      devices: [PreviewDevices],
-      viewName: String = ""
-    ) {
-      self.preView = preView
-      self.devices = devices
-      self.viewName = viewName
-    }
-    
-    public var body: some View {
-      Group {
-        ForEach(devices, id: \.self) { device in
-          preView
-            .previewDevice(.init(rawValue: device.rawValue))
-            .previewDisplayName("\(device.rawValue) \(viewName)")
-        }
+  /// Preview on multi devices.
+  static func previews(
+    _ preview: some View,
+    devices: [Bag.PreviewDevices],
+    viewName: String = ""
+  ) -> some View {
+    Group {
+      ForEach(devices, id: \.self) { device in
+        preview
+          .previewDevice(.init(rawValue: device.rawValue))
+          .previewDisplayName("\(device.rawValue) \(viewName)")
       }
     }
   }
 }
 
-public extension Aghs.Preview {
+public extension Aghs.Bag {
   
   enum PreviewDevices: String {
     
