@@ -1,8 +1,8 @@
 //
-//  AppInfo.swift
+//  TaskEx.swift
 //  
 //
-//  Created by zzzwco on 2022/11/11.
+//  Created by zzzwco on 2022/7/29.
 //
 //  Copyright (c) 2021 zzzwco <zzzwco@outlook.com>
 //
@@ -27,14 +27,12 @@
 
 import Foundation
 
-public struct AppInfo {
+extension Task: AxBoxable {}
+
+public extension AxBox where T == Task<Never, Never> {
   
-  public static let displayName =
-  Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String
-  
-  public static let version =
-  Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
-  
-  public static let buildVersion =
-  Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
+  /// Sleep in seconds.
+  static func sleep(seconds: Double) async throws {
+    try await Task.sleep(nanoseconds: UInt64(seconds * 1_000_000_000))
+  }
 }

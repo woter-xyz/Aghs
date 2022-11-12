@@ -1,8 +1,8 @@
 //
-//  TaskExtensions.swift
+//  UIScreenEx.swift
 //  
 //
-//  Created by zzzwco on 2022/7/29.
+//  Created by zzzwco on 2022/11/11.
 //
 //  Copyright (c) 2021 zzzwco <zzzwco@outlook.com>
 //
@@ -26,11 +26,17 @@
 //
 
 import Foundation
+import SwiftUI
 
-public extension Task where Success == Never, Failure == Never {
+#if canImport(UIKit)
+
+public extension AxBox where T == UIScreen {
   
-  /// Sleep in seconds.
-  static func sleep(seconds: Double) async throws {
-    try await Task.sleep(nanoseconds: UInt64(seconds * 1_000_000_000))
-  }
+  /// Get screen width.
+  static let width = UIScreen.main.bounds.width
+
+  /// Get screen height.
+  static let height = UIScreen.main.bounds.height
 }
+#endif
+

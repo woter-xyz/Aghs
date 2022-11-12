@@ -1,8 +1,8 @@
 //
-//  UIScreenExtensions.swift
+//  Aghs.swift
 //  
 //
-//  Created by zzzwco on 2022/11/11.
+//  Created by zzzwco on 2022/11/12.
 //
 //  Copyright (c) 2021 zzzwco <zzzwco@outlook.com>
 //
@@ -28,14 +28,58 @@
 import Foundation
 import SwiftUI
 
-#if canImport(UIKit)
-public extension UIScreen {
-  
-  /// Get screen width.
-  static let width = UIScreen.main.bounds.width
+/// Source of **ASKit**.
+///
+/// Example:
+///
+/// ```swift
+///
+/// ```
+public struct ASKit {}
 
-  /// Get screen height.
-  static let height = UIScreen.main.bounds.height
+
+/// Source of **ax**.
+///
+/// Example:
+///
+///```swift
+///
+///```
+///
+public struct AxBox<T> {
+
+  let base: T
+
+  init(_ base: T) {
+    self.base = base
+  }
 }
-#endif
 
+public protocol AxBoxable {
+
+  associatedtype T
+
+  var ax: T { get }
+  
+  static var ax: T.Type { get }
+}
+
+public extension AxBoxable {
+
+  var ax: AxBox<Self> {
+    AxBox(self)
+  }
+  
+  static var ax: AxBox<Self>.Type {
+    AxBox.self
+  }
+}
+
+extension NSObject: AxBoxable {}
+
+extension View {
+  
+  var ax: AxBox<some View> {
+    AxBox(self)
+  }
+}

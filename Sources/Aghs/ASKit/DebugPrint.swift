@@ -1,5 +1,5 @@
 //
-//  IntExtensions.swift
+//  DebugPrint.swift
 //  
 //
 //  Created by zzzwco on 2022/11/11.
@@ -26,21 +26,27 @@
 //
 
 import Foundation
-import SwiftUI
 
-public extension Int {
+public extension ASKit {
   
-  #if canImport(UIKit)
-  /// Rational width with referWidth.
-  /// - Parameter referWidth: Default is 375.
-  func widthRatio(_ referWidth: CGFloat = 375.0) -> CGFloat {
-    return CGFloat(self).widthRatio(referWidth)
+  enum PrintType: String {
+    case `default` = "🍺🍺🍺"
+    case warning = "⚠️⚠️⚠️"
+    case error = "❌❌❌"
   }
   
-  /// Rational height with referHeight.
-  /// - Parameter referHeight: Default is 812.
-  func heightRatio(_ referHeight: CGFloat = 812.0) -> CGFloat {
-    return CGFloat(self).heightRatio(referHeight)
+  func print<T>(
+    _ msg: T...,
+    printType: PrintType = .default,
+    file: String = #file,
+    method: String = #function,
+    line: Int = #line
+  ) {
+    #if DEBUG
+    let msg = msg.map { "\($0)\n" }.joined()
+    let content = "\(Date()) \((file as NSString).lastPathComponent)[\(line)], \(method): \n\(msg)\n"
+    let rawValue = printType.rawValue
+    print("\(rawValue) \(content)")
+    #endif
   }
-  #endif
 }

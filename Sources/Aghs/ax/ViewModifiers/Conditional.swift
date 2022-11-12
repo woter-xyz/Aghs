@@ -28,9 +28,7 @@
 import Foundation
 import SwiftUI
 
-
-
-public extension View {
+public extension AxBox where T: View {
   
   /// Transfrom view according to different conditions.
   ///
@@ -49,19 +47,20 @@ public extension View {
   /// - Returns: The original or transformed view.
   @ViewBuilder func `if`<Content: View>(
     _ condition: Bool,
-    apply transform: (Self) -> Content,
-    else elseTransform: ((Self) -> Content)? = nil
+    apply transform: (T) -> Content,
+    else elseTransform: ((T) -> Content)? = nil
   ) -> some View {
     if condition {
-      transform(self)
+      transform(base)
     } else {
       if let elseTransform {
-        elseTransform(self)
+        elseTransform(base)
       } else {
-        self
+        base
       }
     }
   }
+
   
   /// Transform according to an optional value that could be unwrapped or not.
   /// - Parameters:
@@ -70,12 +69,12 @@ public extension View {
   /// - Returns: Transformed view.
   @ViewBuilder func ifLet<V>(
     _ value: V?,
-    apply transform: (Self, V) -> some View
+    apply transform: (T, V) -> some View
   ) -> some View {
     if let value {
-      transform(self, value)
+      transform(base, value)
     } else {
-      self
+      base
     }
   }
 }

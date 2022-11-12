@@ -1,5 +1,5 @@
 //
-//  DebugPrint.swift
+//  CGFloatEx.swift
 //  
 //
 //  Created by zzzwco on 2022/11/11.
@@ -26,24 +26,23 @@
 //
 
 import Foundation
+import SwiftUI
 
-public enum PrintType: String {
-  case `default` = "🍺🍺🍺"
-  case warning = "⚠️⚠️⚠️"
-  case error = "❌❌❌"
-}
+extension CGFloat: AxBoxable {}
 
-public func printLog<T>(
-  _ msg: T...,
-  printType: PrintType = .default,
-  file: String = #file,
-  method: String = #function,
-  line: Int = #line
-) {
-  #if DEBUG
-  let msg = msg.map { "\($0)\n" }.joined()
-  let content = "\(Date()) \((file as NSString).lastPathComponent)[\(line)], \(method): \n\(msg)\n"
-  let rawValue = printType.rawValue
-  print("\(rawValue) \(content)")
+public extension AxBox where T == CGFloat {
+  
+  #if canImport(UIKit)
+  /// Rational width with referWidth.
+  /// - Parameter referWidth: Default is 375.
+  func widthRatio(_ referWidth: CGFloat = 375.0) -> CGFloat {
+    return UIScreen.ax.width * base.self / referWidth
+  }
+  
+  /// Rational height with referHeight.
+  /// - Parameter referHeight: Default is 812.
+  func heightRatio(_ referHeight: CGFloat = 812.0) -> CGFloat {
+    return UIScreen.ax.height * base.self / referHeight
+  }
   #endif
 }

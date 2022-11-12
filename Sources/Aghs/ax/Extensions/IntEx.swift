@@ -1,5 +1,5 @@
 //
-//  CGFloatExtensions.swift
+//  IntEx.swift
 //  
 //
 //  Created by zzzwco on 2022/11/11.
@@ -28,19 +28,21 @@
 import Foundation
 import SwiftUI
 
-public extension CGFloat {
+extension Int: AxBoxable {}
+
+public extension AxBox where T == Int {
   
   #if canImport(UIKit)
   /// Rational width with referWidth.
   /// - Parameter referWidth: Default is 375.
   func widthRatio(_ referWidth: CGFloat = 375.0) -> CGFloat {
-    return UIScreen.width * self / referWidth
+    return CGFloat(base.self).ax.widthRatio(referWidth)
   }
   
   /// Rational height with referHeight.
   /// - Parameter referHeight: Default is 812.
   func heightRatio(_ referHeight: CGFloat = 812.0) -> CGFloat {
-    return UIScreen.height * self / referHeight
+    return CGFloat(base.self).ax.heightRatio(referHeight)
   }
   #endif
 }
