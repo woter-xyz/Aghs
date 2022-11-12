@@ -55,7 +55,7 @@ public extension Aghs {
 ///
 public struct AxBox<T> {
 
-  let base: T
+  public let base: T
 
   init(_ base: T) {
     self.base = base
