@@ -27,17 +27,11 @@
 
 import Foundation
 
-public extension ASKit {
+public extension Aghs {
   
-  enum PrintType: String {
-    case `default` = "🍺🍺🍺"
-    case warning = "⚠️⚠️⚠️"
-    case error = "❌❌❌"
-  }
-  
-  func print<T>(
+  static func print<T>(
     _ msg: T...,
-    printType: PrintType = .default,
+    symbol: String = "🍺🍺🍺",
     file: String = #file,
     method: String = #function,
     line: Int = #line
@@ -45,8 +39,7 @@ public extension ASKit {
     #if DEBUG
     let msg = msg.map { "\($0)\n" }.joined()
     let content = "\(Date()) \((file as NSString).lastPathComponent)[\(line)], \(method): \n\(msg)\n"
-    let rawValue = printType.rawValue
-    print("\(rawValue) \(content)")
+    Swift.print("\(symbol) \(content)")
     #endif
   }
 }

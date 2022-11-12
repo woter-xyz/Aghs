@@ -28,14 +28,14 @@
 import Foundation
 import SwiftUI
 
-/// Source of **ASKit**.
+/// Source of **Aghs**.
 ///
 /// Example:
 ///
 /// ```swift
 ///
 /// ```
-public struct ASKit {}
+public struct Aghs {}
 
 
 /// Source of **ax**.

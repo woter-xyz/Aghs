@@ -27,7 +27,7 @@
 
 import Foundation
 
-public extension ASKit {
+public extension Aghs {
   
   /// Get info of app such as ``version``, ``displayName``, etc.
   struct AppInfo {

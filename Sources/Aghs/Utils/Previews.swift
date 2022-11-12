@@ -27,7 +27,7 @@
 
 import SwiftUI
 
-public extension ASKit {
+public extension Aghs {
   
   struct Preview<C: View>: View {
     
@@ -55,6 +55,9 @@ public extension ASKit {
       }
     }
   }
+}
+
+public extension Aghs.Preview {
   
   enum PreviewDevices: String {
     
