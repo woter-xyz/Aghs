@@ -1,8 +1,8 @@
 //
-//  DebugPrint.swift
+//  Aghs.swift
 //  
 //
-//  Created by zzzwco on 2022/11/11.
+//  Created by zzzwco on 2022/11/12.
 //
 //  Copyright (c) 2021 zzzwco <zzzwco@outlook.com>
 //
@@ -26,21 +26,67 @@
 //
 
 import Foundation
+import SwiftUI
+
+/// Source of **Aghs**.
+///
+/// Example:
+///
+/// ```swift
+///
+/// ```
+public struct Aghs {}
 
 public extension Aghs {
   
-  /// Print in debug mode.
-  static func print<T>(
-    _ msg: T...,
-    symbol: String = "🍺🍺🍺",
-    file: String = #file,
-    method: String = #function,
-    line: Int = #line
-  ) {
-    #if DEBUG
-    let msg = msg.map { "\($0)\n" }.joined()
-    let content = "\(Date()) \((file as NSString).lastPathComponent)[\(line)], \(method): \n\(msg)\n"
-    Swift.print("\(symbol) \(content)")
-    #endif
+  /// A storage bag for package itself that makes using `Aghs` enjoyable.
+  /// There's no need to use it.
+  struct Bag {}
+}
+
+
+/// Source of **ax**.
+///
+/// Example:
+///
+///```swift
+///
+///```
+///
+public struct AxBox<T> {
+
+  public let base: T
+
+  init(_ base: T) {
+    self.base = base
+  }
+}
+
+public protocol AxBoxable {
+
+  associatedtype T
+
+  var ax: T { get }
+  
+  static var ax: T.Type { get }
+}
+
+public extension AxBoxable {
+
+  var ax: AxBox<Self> {
+    AxBox(self)
+  }
+  
+  static var ax: AxBox<Self>.Type {
+    AxBox.self
+  }
+}
+
+extension NSObject: AxBoxable {}
+
+public extension View {
+  
+  var ax: AxBox<some View> {
+    AxBox(self)
   }
 }

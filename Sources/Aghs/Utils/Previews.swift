@@ -1,5 +1,5 @@
 //
-//  ASPreview.swift
+//  Previews.swift
 //  
 //
 //  Created by zzzwco on 2022/11/11.
@@ -27,26 +27,17 @@
 
 import SwiftUI
 
-public struct ASPreview<C: View>: View {
+public extension Aghs {
   
-  private let preView: C
-  private let devices: [ASPreviewDevices]
-  private var viewName: String
-  
-  public init(
-    _ preView: C,
-    devices: [ASPreviewDevices],
+  /// Preview on multi devices.
+  static func previews(
+    _ preview: some View,
+    devices: [Bag.PreviewDevices],
     viewName: String = ""
-  ) {
-    self.preView = preView
-    self.devices = devices
-    self.viewName = viewName
-  }
-  
-  public var body: some View {
+  ) -> some View {
     Group {
       ForEach(devices, id: \.self) { device in
-        preView
+        preview
           .previewDevice(.init(rawValue: device.rawValue))
           .previewDisplayName("\(device.rawValue) \(viewName)")
       }
@@ -54,25 +45,28 @@ public struct ASPreview<C: View>: View {
   }
 }
 
-public enum ASPreviewDevices: String {
+public extension Aghs.Bag {
   
-  case iPhone_13_Pro = "iPhone 13 Pro"
-  case iPhone_13_Pro_Max = "iPhone 13 Pro Max"
-  case iPhone_13_mini = "iPhone 13 mini"
-  case iPhone_13 = "iPhone 13"
-  case iPhone_SE_3rd_generation = "iPhone SE (3rd generation)"
-  case iPhone_14 = "iPhone 14"
-  case iPhone_14_Plus = "iPhone 14 Plus"
-  case iPhone_14_Pro = "iPhone 14 Pro"
-  case iPhone_14_Pro_Max = "iPhone 14 Pro Max"
-  case iPad_Air_5th_generation = "iPad Air (5th generation)"
-  case iPad_mini_6th_generation = "iPad mini (6th generation)"
-  case iPad_Pro_11_inch_4th_generation = "iPad Pro (11-inch) (4th generation)"
-  case iPad_Pro_12_9_inch_6th_generation = "iPad Pro (12.9-inch) (6th generation)"
-  case Apple_Watch_SE_40mm = "Apple Watch SE (40mm)"
-  case Apple_Watch_SE_44mm = "Apple Watch SE (44mm)"
-  case Apple_Watch_Series_8_41mm = "Apple Watch Series 8 (41mm)"
-  case Apple_Watch_Series_8_45mm = "Apple Watch Series 8 (45mm)"
-  case Apple_Watch_Ultra_49mm = "Apple Watch Ultra (49mm)"
-  case Mac = "Mac"
+  enum PreviewDevices: String {
+    
+    case iPhone_13_Pro = "iPhone 13 Pro"
+    case iPhone_13_Pro_Max = "iPhone 13 Pro Max"
+    case iPhone_13_mini = "iPhone 13 mini"
+    case iPhone_13 = "iPhone 13"
+    case iPhone_SE_3rd_generation = "iPhone SE (3rd generation)"
+    case iPhone_14 = "iPhone 14"
+    case iPhone_14_Plus = "iPhone 14 Plus"
+    case iPhone_14_Pro = "iPhone 14 Pro"
+    case iPhone_14_Pro_Max = "iPhone 14 Pro Max"
+    case iPad_Air_5th_generation = "iPad Air (5th generation)"
+    case iPad_mini_6th_generation = "iPad mini (6th generation)"
+    case iPad_Pro_11_inch_4th_generation = "iPad Pro (11-inch) (4th generation)"
+    case iPad_Pro_12_9_inch_6th_generation = "iPad Pro (12.9-inch) (6th generation)"
+    case Apple_Watch_SE_40mm = "Apple Watch SE (40mm)"
+    case Apple_Watch_SE_44mm = "Apple Watch SE (44mm)"
+    case Apple_Watch_Series_8_41mm = "Apple Watch Series 8 (41mm)"
+    case Apple_Watch_Series_8_45mm = "Apple Watch Series 8 (45mm)"
+    case Apple_Watch_Ultra_49mm = "Apple Watch Ultra (49mm)"
+    case Mac = "Mac"
+  }
 }

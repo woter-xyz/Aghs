@@ -1,8 +1,8 @@
 //
-//  DebugPrint.swift
+//  TextStyle.swift
 //  
 //
-//  Created by zzzwco on 2022/11/11.
+//  Created by zzzwco on 2022/11/12.
 //
 //  Copyright (c) 2021 zzzwco <zzzwco@outlook.com>
 //
@@ -26,21 +26,3 @@
 //
 
 import Foundation
-
-public extension Aghs {
-  
-  /// Print in debug mode.
-  static func print<T>(
-    _ msg: T...,
-    symbol: String = "🍺🍺🍺",
-    file: String = #file,
-    method: String = #function,
-    line: Int = #line
-  ) {
-    #if DEBUG
-    let msg = msg.map { "\($0)\n" }.joined()
-    let content = "\(Date()) \((file as NSString).lastPathComponent)[\(line)], \(method): \n\(msg)\n"
-    Swift.print("\(symbol) \(content)")
-    #endif
-  }
-}

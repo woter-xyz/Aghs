@@ -27,14 +27,18 @@
 
 import Foundation
 
-public struct AppInfo {
+public extension Aghs {
   
-  public static let displayName =
-  Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String
-  
-  public static let version =
-  Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
-  
-  public static let buildVersion =
-  Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
+  /// Get info of app such as ``version``, ``displayName``, etc.
+  struct AppInfo {
+    
+    public static let displayName =
+    Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String
+    
+    public static let version =
+    Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+    
+    public static let buildVersion =
+    Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
+  }
 }

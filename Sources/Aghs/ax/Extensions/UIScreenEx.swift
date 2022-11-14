@@ -1,5 +1,5 @@
 //
-//  UIScreenExtensions.swift
+//  UIScreenEx.swift
 //  
 //
 //  Created by zzzwco on 2022/11/11.
@@ -29,7 +29,8 @@ import Foundation
 import SwiftUI
 
 #if canImport(UIKit)
-public extension UIScreen {
+
+public extension AxBox where T == UIScreen {
   
   /// Get screen width.
   static let width = UIScreen.main.bounds.width
