@@ -26,4 +26,43 @@
 //
 
 import Foundation
+import SwiftUI
 
+public extension Ax where T: View {
+  
+  func hud(_ hud: Hud) -> some View {
+    base.modifier(Aghs.Bag.HudModifier(hud: hud))
+  }
+}
+
+public final class Hud: ObservableObject {
+  @Published public var isPresented = false
+  public var content: AnyView = AnyView(EmptyView())
+  
+  public func show(content: () -> some View) {
+    isPresented = true
+    self.content = AnyView(content())
+  }
+}
+
+public extension Aghs.Bag {
+  
+  struct HudModifier: ViewModifier {
+    @StateObject public var hud: Hud
+    
+    public func body(content: Content) -> some View {
+      ZStack {
+        content.environmentObject(hud)
+        
+        if hud.isPresented {
+          Color.black.opacity(0.6)
+            .ignoresSafeArea()
+            .onTapGesture {
+              hud.isPresented = false
+            }
+          hud.content
+        }
+      }
+    }
+  }
+}
