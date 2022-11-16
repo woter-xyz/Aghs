@@ -39,6 +39,8 @@ public final class Hud: ObservableObject {
   @Published public var isPresented = false
   public var content: AnyView = AnyView(EmptyView())
   
+  public init() {}
+  
   public func show(content: () -> some View) {
     isPresented = true
     self.content = AnyView(content())
