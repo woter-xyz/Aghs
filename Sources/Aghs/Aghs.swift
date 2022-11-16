@@ -53,7 +53,7 @@ public extension Aghs {
 ///
 ///```
 ///
-public struct AxBox<T> {
+public struct Ax<T> {
 
   public let base: T
 
@@ -62,7 +62,7 @@ public struct AxBox<T> {
   }
 }
 
-public protocol AxBoxable {
+public protocol Axable {
 
   associatedtype T
 
@@ -71,22 +71,22 @@ public protocol AxBoxable {
   static var ax: T.Type { get }
 }
 
-public extension AxBoxable {
+public extension Axable {
 
-  var ax: AxBox<Self> {
-    AxBox(self)
+  var ax: Ax<Self> {
+    Ax(self)
   }
   
-  static var ax: AxBox<Self>.Type {
-    AxBox.self
+  static var ax: Ax<Self>.Type {
+    Ax.self
   }
 }
 
-extension NSObject: AxBoxable {}
+extension NSObject: Axable {}
 
 public extension View {
   
-  var ax: AxBox<some View> {
-    AxBox(self)
+  var ax: Ax<some View> {
+    Ax(self)
   }
 }

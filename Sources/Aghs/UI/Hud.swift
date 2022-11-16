@@ -1,8 +1,8 @@
 //
-//  IntEx.swift
+//  Hud.swift
 //  
 //
-//  Created by zzzwco on 2022/11/11.
+//  Created by zzzwco on 2022/11/16.
 //
 //  Copyright (c) 2021 zzzwco <zzzwco@outlook.com>
 //
@@ -26,23 +26,4 @@
 //
 
 import Foundation
-import SwiftUI
 
-extension Int: Axable {}
-
-public extension Ax where T == Int {
-  
-  #if canImport(UIKit)
-  /// Rational width with referWidth.
-  /// - Parameter referWidth: Default is 375.
-  func widthRatio(_ referWidth: CGFloat = 375.0) -> CGFloat {
-    return CGFloat(base.self).ax.widthRatio(referWidth)
-  }
-  
-  /// Rational height with referHeight.
-  /// - Parameter referHeight: Default is 812.
-  func heightRatio(_ referHeight: CGFloat = 812.0) -> CGFloat {
-    return CGFloat(base.self).ax.heightRatio(referHeight)
-  }
-  #endif
-}

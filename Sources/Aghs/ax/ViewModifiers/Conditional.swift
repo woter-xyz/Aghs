@@ -28,7 +28,7 @@
 import Foundation
 import SwiftUI
 
-public extension AxBox where T: View {
+public extension Ax where T: View {
   
   /// Transfrom view according to different conditions.
   ///
