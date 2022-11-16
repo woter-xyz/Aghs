@@ -54,7 +54,7 @@ public extension Aghs.Bag {
     
     public func body(content: Content) -> some View {
       ZStack {
-        content.environmentObject(hud)
+        content
         
         if hud.isPresented {
           Color.black.opacity(0.6)
@@ -65,6 +65,7 @@ public extension Aghs.Bag {
           hud.content
         }
       }
+      .environmentObject(hud)
     }
   }
 }
