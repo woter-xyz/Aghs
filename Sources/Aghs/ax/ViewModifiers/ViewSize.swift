@@ -1,8 +1,8 @@
 //
-//  IntEx.swift
+//  File.swift
 //  
 //
-//  Created by zzzwco on 2022/11/11.
+//  Created by zzzwco on 2022/11/16.
 //
 //  Copyright (c) 2021 zzzwco <zzzwco@outlook.com>
 //
@@ -28,21 +28,40 @@
 import Foundation
 import SwiftUI
 
-extension Int: Axable {}
+public extension Ax where T: View {
+  
+  func onChangeOfSize(perform action: @escaping (CGSize) -> Void) -> some View {
+    base.modifier(Aghs.Bag.SizeModifer(onChange: action))
+  }
+}
 
-public extension Ax where T == Int {
+public extension Aghs.Bag {
   
-  #if canImport(UIKit)
-  /// Rational width with referWidth.
-  /// - Parameter referWidth: Default is 375.
-  func widthRatio(_ referWidth: CGFloat = 375.0) -> CGFloat {
-    return CGFloat(base.self).ax.widthRatio(referWidth)
+  struct SizeModifer: ViewModifier {
+    public let onChange: (CGSize) -> Void
+    
+    public func body(content: Content) -> some View {
+      content
+        .background(
+          GeometryReader { gp in
+            Color.clear
+              .anchorPreference(key: BoundsPreferenceKey.self, value: .bounds) {
+                gp[$0]
+              }
+              .onPreferenceChange(BoundsPreferenceKey.self) {
+                onChange($0.size)
+              }
+          }
+        )
+    }
   }
   
-  /// Rational height with referHeight.
-  /// - Parameter referHeight: Default is 812.
-  func heightRatio(_ referHeight: CGFloat = 812.0) -> CGFloat {
-    return CGFloat(base.self).ax.heightRatio(referHeight)
+  struct BoundsPreferenceKey: PreferenceKey {
+    
+    public static var defaultValue: CGRect = .zero
+    
+    public static func reduce(value: inout CGRect, nextValue: () -> CGRect) {
+      value = nextValue()
+    }
   }
-  #endif
 }

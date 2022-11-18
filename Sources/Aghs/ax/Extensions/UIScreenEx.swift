@@ -30,7 +30,7 @@ import SwiftUI
 
 #if canImport(UIKit)
 
-public extension AxBox where T == UIScreen {
+public extension Ax where T == UIScreen {
   
   /// Get screen width.
   static let width = UIScreen.main.bounds.width

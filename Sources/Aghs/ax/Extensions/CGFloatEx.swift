@@ -28,9 +28,9 @@
 import Foundation
 import SwiftUI
 
-extension CGFloat: AxBoxable {}
+extension CGFloat: Axable {}
 
-public extension AxBox where T == CGFloat {
+public extension Ax where T == CGFloat {
   
   #if canImport(UIKit)
   /// Rational width with referWidth.

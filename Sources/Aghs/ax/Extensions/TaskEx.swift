@@ -27,9 +27,9 @@
 
 import Foundation
 
-extension Task: AxBoxable {}
+extension Task: Axable {}
 
-public extension AxBox where T == Task<Never, Never> {
+public extension Ax where T == Task<Never, Never> {
   
   /// Sleep in seconds.
   static func sleep(seconds: Double) async throws {
