@@ -37,13 +37,28 @@ public extension Ax where T: View {
 
 public final class Hud: ObservableObject {
   @Published public var isPresented = false
-  public var content: AnyView = AnyView(EmptyView())
+  var content: AnyView = AnyView(EmptyView())
+  var background: AnyView = AnyView(Color.black.opacity(0.6))
+  var presentationMode: PresentationMode = .forever()
   
   public init() {}
   
-  public func show(content: () -> some View) {
-    isPresented = true
+  public func show(
+    background: some View = AnyView(Color.black.opacity(0.6)),
+    presentationMode: PresentationMode = .forever(),
+    content: () -> some View
+  ) {
+    self.background = AnyView(background)
+    self.presentationMode = presentationMode
     self.content = AnyView(content())
+    withAnimation {
+      isPresented = true
+    }
+  }
+  
+  public enum PresentationMode {
+    case forever(interactiveHide: Bool = true)
+    case dimissAfter(seconds: Double = 2.0)
   }
 }
 
@@ -57,12 +72,15 @@ public extension Aghs.Bag {
         content
         
         if hud.isPresented {
-          Color.black.opacity(0.6)
+          hud.background
             .ignoresSafeArea()
+            .transition(.opacity)
             .onTapGesture {
               hud.isPresented = false
             }
+          
           hud.content
+            .transition(.opacity.combined(with: .scale))
         }
       }
       .environmentObject(hud)
