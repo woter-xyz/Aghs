@@ -65,6 +65,14 @@ public extension Aghs.Bag {
   
   struct HudModifier: ViewModifier {
     @StateObject public var hud: Hud
+    private var transition: AnyTransition {
+      switch hud.style {
+      case is TipHudStyle:
+        return (hud.style as! TipHudStyle).position.transition
+      default:
+        return .opacity.combined(with: .scale)
+      }
+    }
     
     public func body(content: Content) -> some View {
       ZStack(alignment: hud.style.position.alignment) {
@@ -90,7 +98,7 @@ public extension Aghs.Bag {
               }
             
             AnyView(hud.content)
-              .transition(.opacity.combined(with: .scale))
+              .transition(transition)
           }
           .zIndex(.infinity)
         }
@@ -166,6 +174,17 @@ public extension Aghs.Bag {
         return .center
       case .bottom:
         return .bottom
+      }
+    }
+    
+    var transition: AnyTransition {
+      switch self {
+      case .top:
+        return .opacity.combined(with: .move(edge: .top))
+      case .bottom:
+        return .opacity.combined(with: .move(edge: .bottom))
+      case .center:
+        return .opacity.combined(with: .scale)
       }
     }
   }
