@@ -35,6 +35,7 @@ public extension Ax where T: View {
   }
 }
 
+@MainActor
 public final class Hud: ObservableObject {
   @Published public var isPresented = false
   var content: any View = EmptyView()
