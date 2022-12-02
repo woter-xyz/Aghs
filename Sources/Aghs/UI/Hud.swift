@@ -65,17 +65,9 @@ public extension Aghs.Bag {
   
   struct HudModifier: ViewModifier {
     @StateObject public var hud: Hud
-    private var transition: AnyTransition {
-      switch hud.style {
-      case is TipHudStyle:
-        return (hud.style as! TipHudStyle).position.transition
-      default:
-        return .opacity.combined(with: .scale)
-      }
-    }
     
     public func body(content: Content) -> some View {
-      ZStack(alignment: hud.style.position.alignment) {
+      ZStack {
         content
         
         if hud.isPresented {
@@ -98,7 +90,7 @@ public extension Aghs.Bag {
               }
             
             AnyView(hud.content)
-              .transition(transition)
+              .transition(.opacity.combined(with: .scale))
           }
           .zIndex(.infinity)
         }
@@ -112,99 +104,28 @@ public protocol HudStyle {
   var background: any View { get set }
   var interactiveHide: Bool { get set }
   var duration: Double? { get set }
-  var position: Aghs.Bag.HudContentPosition { get set }
 }
 
 public extension HudStyle where Self == Aghs.Bag.DefaultHudStyle {
   
   static func `default`(
-    background: any View = Color.black.opacity(0.6),
+    background: any View = Color.black.opacity(0.5),
     interactiveHide: Bool = true,
-    duration: Double? = nil,
-    position: Aghs.Bag.HudContentPosition = .center
+    duration: Double? = nil
   ) -> Aghs.Bag.DefaultHudStyle {
     .init(
       background: background,
       interactiveHide: interactiveHide,
-      duration: duration,
-      position: position
-    )
-  }
-}
-
-public extension HudStyle where Self == Aghs.Bag.TipHudStyle {
-  
-  static func tip(
-    style: Aghs.Bag.TipStyle = .default(),
-    duration: Double? = 2.0,
-    position: Aghs.Bag.HudContentPosition = .center
-  ) -> Aghs.Bag.TipHudStyle {
-    var background: any View = Color.clear
-    var interactiveHide = true
-    var duration = duration
-    switch style {
-    case .default(let value):
-      background = value ?? Color.clear
-    case .loading(let value):
-      background = value ?? Color.black.opacity(0.0001)
-      interactiveHide = false
-      duration = nil
-    }
-    return .init(
-      background: background,
-      interactiveHide: interactiveHide,
-      duration: duration,
-      position: position
+      duration: duration
     )
   }
 }
 
 public extension Aghs.Bag {
   
-  enum HudContentPosition {
-    case top
-    case center
-    case bottom
-    
-    var alignment: Alignment {
-      switch self {
-      case .top:
-        return .top
-      case .center:
-        return .center
-      case .bottom:
-        return .bottom
-      }
-    }
-    
-    var transition: AnyTransition {
-      switch self {
-      case .top:
-        return .opacity.combined(with: .move(edge: .top))
-      case .bottom:
-        return .opacity.combined(with: .move(edge: .bottom))
-      case .center:
-        return .opacity.combined(with: .scale)
-      }
-    }
-  }
-  
   struct DefaultHudStyle: HudStyle {
     public var background: any View
     public var interactiveHide: Bool
     public var duration: Double?
-    public var position: HudContentPosition
-  }
-  
-  struct TipHudStyle: HudStyle {
-    public var background: any View
-    public var interactiveHide: Bool
-    public var duration: Double?
-    public var position: HudContentPosition
-  }
-  
-  enum TipStyle {
-    case `default`(background: (any View)? = nil)
-    case loading(background: (any View)? = nil)
   }
 }
