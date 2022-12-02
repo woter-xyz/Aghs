@@ -32,8 +32,8 @@ public extension Ax where T: View {
   
   func toast<C: View>(
     isPresented: Binding<Bool>,
-    style: Aghs.Bag.ToastStyle = .default,
-    position: Aghs.Bag.ToastPosition = .top,
+    style: Aghs.Bag.Toast.Style = .default(),
+    position: Aghs.Bag.Toast.Position = .top,
     @ViewBuilder content: @escaping () -> C
   ) -> some View {
     base.modifier(
@@ -51,14 +51,14 @@ public extension Aghs.Bag {
   
   struct ToastModifier<C: View>: ViewModifier {
     public var isPresented: Binding<Bool>
-    public let style: ToastStyle
-    public let postion: ToastPosition
+    public let style: Toast.Style
+    public let postion: Toast.Position
     public let toastContent: () -> C
     
     init(
       isPresented: Binding<Bool>,
-      style: ToastStyle,
-      postion: ToastPosition,
+      style: Toast.Style,
+      postion: Toast.Position,
       @ViewBuilder content: @escaping () -> C
     ) {
       self.isPresented = isPresented
@@ -69,10 +69,13 @@ public extension Aghs.Bag {
     
     public func body(content: Content) -> some View {
       ZStack(alignment: postion.alignment) {
-        content
+        ZStack {
+          content
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         
         if isPresented.wrappedValue {
-          if style == .loading {
+          if case .loading = style {
             Color.black.opacity(0.0001)
               .ignoresSafeArea()
               .transition(.opacity)
@@ -81,49 +84,59 @@ public extension Aghs.Bag {
           toastContent()
             .transition(postion.transition)
             .zIndex(99999)
+            .onAppear {
+              if case let .default(duration) = style {
+                DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+                  self.isPresented.wrappedValue = false
+                }
+              }
+            }
         }
       }
+      .animation(.default, value: isPresented.wrappedValue)
     }
   }
 }
 
 public extension Aghs.Bag {
   
-  enum ToastPosition {
-    case top
-    case center
-    case bottom
-    
-    var alignment: Alignment {
-      switch self {
-      case .top:
-        return .top
-      case .center:
-        return .center
-      case .bottom:
-        return .bottom
+  struct Toast {
+    public enum Position {
+      case top
+      case center
+      case bottom
+      
+      var alignment: Alignment {
+        switch self {
+        case .top:
+          return .top
+        case .center:
+          return .center
+        case .bottom:
+          return .bottom
+        }
+      }
+      
+      var transition: AnyTransition {
+        switch self {
+        case .top:
+          return .opacity
+            .combined(with: .scale)
+            .combined(with: .move(edge: .top))
+        case .bottom:
+          return .opacity
+            .combined(with: .scale)
+            .combined(with: .move(edge: .bottom))
+        case .center:
+          return .opacity
+            .combined(with: .scale)
+        }
       }
     }
     
-    var transition: AnyTransition {
-      switch self {
-      case .top:
-        return .opacity
-          .combined(with: .scale)
-          .combined(with: .move(edge: .top))
-      case .bottom:
-        return .opacity
-          .combined(with: .scale)
-          .combined(with: .move(edge: .bottom))
-      case .center:
-        return .opacity
-          .combined(with: .scale)
-      }
+    public enum Style {
+      case `default`(duration: Double = 2)
+      case loading
     }
-  }
-  
-  enum ToastStyle {
-    case `default`
-    case loading
   }
 }
