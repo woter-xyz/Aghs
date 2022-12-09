@@ -28,7 +28,7 @@
 import Foundation
 import SwiftUI
 
-public extension Ax where T: View {
+public extension View {
   
   /// Transfrom view according to different conditions.
   ///
@@ -45,18 +45,18 @@ public extension Ax where T: View {
   ///   - elseTransform: Apply when `condition` is `false`.
   ///     If it's nil, return self.
   /// - Returns: The original or transformed view.
-  @ViewBuilder func `if`<Content: View>(
+  @ViewBuilder func ax_If<Content: View>(
     _ condition: Bool,
-    apply transform: (T) -> Content,
-    else elseTransform: ((T) -> Content)? = nil
+    apply transform: (Self) -> Content,
+    else elseTransform: ((Self) -> Content)? = nil
   ) -> some View {
     if condition {
-      transform(base)
+      transform(self)
     } else {
       if let elseTransform {
-        elseTransform(base)
+        elseTransform(self)
       } else {
-        base
+        self
       }
     }
   }
@@ -67,14 +67,14 @@ public extension Ax where T: View {
   ///   - value: An optional value.
   ///   - transform: Apply when `value` has some value.
   /// - Returns: Transformed view.
-  @ViewBuilder func ifLet<V>(
+  @ViewBuilder func ax_ifLet<V>(
     _ value: V?,
-    apply transform: (T, V) -> some View
+    apply transform: (Self, V) -> some View
   ) -> some View {
     if let value {
-      transform(base, value)
+      transform(self, value)
     } else {
-      base
+      self
     }
   }
 }
