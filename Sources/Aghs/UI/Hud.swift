@@ -68,7 +68,7 @@ public extension Aghs.Bag {
     @StateObject public var hud: Hud
     
     public func body(content: Content) -> some View {
-      ZStack {
+      ZStack(alignment: hud.style.alignment) {
         content
         
         if hud.isPresented {
@@ -91,7 +91,7 @@ public extension Aghs.Bag {
               }
             
             AnyView(hud.content)
-              .transition(.opacity.combined(with: .scale))
+              .transition(hud.style.transiton)
           }
           .zIndex(.infinity)
         }
@@ -104,19 +104,25 @@ public extension Aghs.Bag {
 public protocol HudStyle {
   var background: any View { get set }
   var interactiveHide: Bool { get set }
+  var alignment: Alignment { get set }
+  var transiton: AnyTransition { get set }
   var duration: Double? { get set }
 }
 
 public extension HudStyle where Self == Aghs.Bag.DefaultHudStyle {
   
   static func `default`(
-    background: any View = Color.black.opacity(0.5),
+    background: any View = Color.black.opacity(0.6),
     interactiveHide: Bool = true,
+    alignment: Alignment = .center,
+    transiton: AnyTransition = .opacity.combined(with: .scale),
     duration: Double? = nil
   ) -> Aghs.Bag.DefaultHudStyle {
     .init(
       background: background,
       interactiveHide: interactiveHide,
+      alignment: alignment,
+      transiton: transiton,
       duration: duration
     )
   }
@@ -127,6 +133,8 @@ public extension Aghs.Bag {
   struct DefaultHudStyle: HudStyle {
     public var background: any View
     public var interactiveHide: Bool
+    public var alignment: Alignment
+    public var transiton: AnyTransition
     public var duration: Double?
   }
 }
