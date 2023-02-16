@@ -45,7 +45,7 @@ public extension View {
   ///   - elseTransform: Apply when `condition` is `false`.
   ///     If it's nil, return self.
   /// - Returns: The original or transformed view.
-  @ViewBuilder func ax_If<Content: View>(
+  @ViewBuilder func ax_if<Content: View>(
     _ condition: Bool,
     apply transform: (Self) -> Content,
     else elseTransform: ((Self) -> Content)? = nil
