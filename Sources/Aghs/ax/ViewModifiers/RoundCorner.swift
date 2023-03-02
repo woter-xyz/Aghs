@@ -28,6 +28,7 @@
 import Foundation
 import SwiftUI
 
+#if canImport(UIKit)
 public extension Ax where T: View {
   
   func roundCorner(_ radius: CGFloat, corners: UIRectCorner) -> some View {
@@ -51,3 +52,4 @@ public extension Aghs.Bag {
     }
   }
 }
+#endif
