@@ -71,7 +71,7 @@ public extension Aghs.Bag {
     public func body(content: Content) -> some View {
       ZStack(alignment: postion.alignment) {
         content
-          .ax.onChangeOfSize { size in
+          .ax.getSize { size in
             self.contentSize = size
           }
         

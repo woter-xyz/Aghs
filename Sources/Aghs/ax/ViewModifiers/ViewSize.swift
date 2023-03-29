@@ -30,15 +30,15 @@ import SwiftUI
 
 public extension Ax where T: View {
   
-  func onChangeOfSize(perform action: @escaping (CGSize) -> Void) -> some View {
-    base.modifier(Aghs.Bag.SizeModifer(onChange: action))
+  func getSize(_ callback: @escaping (CGSize) -> Void) -> some View {
+    base.modifier(Aghs.Bag.SizeModifer(callback: callback))
   }
 }
 
 public extension Aghs.Bag {
   
   struct SizeModifer: ViewModifier {
-    public let onChange: (CGSize) -> Void
+    public let callback: (CGSize) -> Void
     
     public func body(content: Content) -> some View {
       content
@@ -49,7 +49,7 @@ public extension Aghs.Bag {
                 gp[$0]
               }
               .onPreferenceChange(BoundsPreferenceKey.self) {
-                onChange($0.size)
+                callback($0.size)
               }
           }
         )
