@@ -54,6 +54,7 @@ public extension Aghs.Bag {
     public let style: Toast.Style
     public let postion: Toast.Position
     public let toastContent: () -> C
+    @State private var contentSize = CGSize.zero
     
     init(
       isPresented: Binding<Bool>,
@@ -69,16 +70,15 @@ public extension Aghs.Bag {
     
     public func body(content: Content) -> some View {
       ZStack(alignment: postion.alignment) {
-        ZStack {
-          content
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        content
+          .ax.onChangeOfSize { size in
+            self.contentSize = size
+          }
         
         if isPresented.wrappedValue {
           if case .loading = style {
-            Color.black.opacity(0.0001)
-              .ignoresSafeArea()
-              .transition(.opacity)
+            Color.white.opacity(0.00001)
+              .frame(width: contentSize.width, height: contentSize.height)
           }
           
           toastContent()
