@@ -30,6 +30,10 @@ import SwiftUI
 
 public extension Ax where T: View {
   
+  /// Retrieve the size of the view and call a callback function with the size.
+  ///
+  /// - Parameter callback: A closure that takes the size of the view as a parameter.
+  /// - Returns: The original view with a background modifier that captures the view's size.
   func getSize(_ callback: @escaping (CGSize) -> Void) -> some View {
     base.modifier(Aghs.Bag.SizeModifer(callback: callback))
   }
@@ -37,16 +41,17 @@ public extension Ax where T: View {
 
 public extension Aghs.Bag {
   
+  /// A view modifier that captures the size of the view and calls a callback function with the size.
   struct SizeModifer: ViewModifier {
     public let callback: (CGSize) -> Void
     
     public func body(content: Content) -> some View {
       content
         .background(
-          GeometryReader { gp in
+          GeometryReader { geometryProxy in
             Color.clear
               .anchorPreference(key: BoundsPreferenceKey.self, value: .bounds) {
-                gp[$0]
+                geometryProxy[$0]
               }
               .onPreferenceChange(BoundsPreferenceKey.self) {
                 callback($0.size)
@@ -56,6 +61,7 @@ public extension Aghs.Bag {
     }
   }
   
+  /// A preference key for storing the view's bounds.
   struct BoundsPreferenceKey: PreferenceKey {
     
     public static var defaultValue: CGRect = .zero

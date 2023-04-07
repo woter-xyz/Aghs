@@ -32,10 +32,10 @@ import SwiftUI
 
 public extension Ax where T == UIScreen {
   
-  /// Get screen width.
+  /// Retrieves the device's screen width.
   static let width = UIScreen.main.bounds.width
 
-  /// Get screen height.
+  /// Retrieves the device's screen height.
   static let height = UIScreen.main.bounds.height
 }
 #endif

@@ -30,20 +30,21 @@ import SwiftUI
 
 public extension View {
   
-  /// Transfrom view according to different conditions.
+  /// Conditionally transform a view based on a boolean condition.
   ///
   /// > Warning:
   /// Avoid using this modifier whenever possible.
   /// As it will break identity of view and cause unexpected issues,
   /// such as bad animation, poor performance, etc.
   ///
-  /// Learn about SwiftUI Identity: [Demystify SwiftUI](https://developer.apple.com/videos/play/wwdc2021/10022/)
+  /// Learn about SwiftUI Identity:
+  /// [Demystify SwiftUI](https://developer.apple.com/videos/play/wwdc2021/10022/)
   /// 
   /// - Parameters:
   ///   - condition: A `true` or `false` value.
-  ///   - transform: Apply when `condition` is `true`.
-  ///   - elseTransform: Apply when `condition` is `false`.
-  ///     If it's nil, return self.
+  ///   - transform: A closure to apply when `condition` is `true`.
+  ///   - elseTransform: A closure to apply when `condition` is `false`.
+  ///   If it's nil, return self.
   /// - Returns: The original or transformed view.
   @ViewBuilder func ax_if<Content: View>(
     _ condition: Bool,
@@ -62,10 +63,10 @@ public extension View {
   }
 
   
-  /// Transform according to an optional value that could be unwrapped or not.
+  /// Transform the view based on an optional value that can be unwrapped or not.
   /// - Parameters:
   ///   - value: An optional value.
-  ///   - transform: Apply when `value` has some value.
+  ///   - transform: A closure to apply when `value` has some value.
   /// - Returns: Transformed view.
   @ViewBuilder func ax_ifLet<V>(
     _ value: V?,

@@ -30,11 +30,16 @@ import SwiftUI
 
 public extension Ax where T: View {
   
+  /// Attach a HUD to the view.
+  ///
+  /// - Parameter hud: A `HUD` instance to be attached to the view.
+  /// - Returns: The original view with the HUD modifier applied.
   func hud(_ hud: Hud) -> some View {
     base.modifier(Aghs.Bag.HudModifier(hud: hud))
   }
 }
 
+/// A HUD that can be displayed on a view.
 @MainActor
 public final class Hud: ObservableObject {
   @Published public var isPresented = false
@@ -43,6 +48,12 @@ public final class Hud: ObservableObject {
   
   public init() {}
   
+  /// Display the HUD with the specified style, animation, and content.
+  ///
+  /// - Parameters:
+  ///   - style: A `HUDStyle` instance specifying the appearance and behavior of the HUD.
+  ///   - animation: The animation to use when showing the HUD.
+  ///   - content: A closure that returns the content of the HUD.
   public func show(
     style: HudStyle = .default(),
     animation: Animation? = .spring(),
@@ -55,6 +66,9 @@ public final class Hud: ObservableObject {
     }
   }
   
+  /// Hide the HUD with the specified animation.
+  ///
+  /// - Parameter animation: The animation to use when hiding the HUD.
   public func hide(_ animation: Animation? = .spring()) {
     withAnimation(animation) {
       isPresented = false
@@ -64,6 +78,7 @@ public final class Hud: ObservableObject {
 
 public extension Aghs.Bag {
   
+  /// A view modifier that adds a HUD to the view.
   struct HudModifier: ViewModifier {
     @StateObject public var hud: Hud
     

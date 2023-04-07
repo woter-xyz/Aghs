@@ -30,6 +30,14 @@ import SwiftUI
 
 public extension Ax where T: View {
   
+  /// Display a toast message on top of the current view.
+  ///
+  /// - Parameters:
+  ///   - isPresented: A binding to a boolean indicating if the toast should be shown.
+  ///   - style: The style of the toast, such as duration or loading.
+  ///   - position: The position of the toast on the screen.
+  ///   - content: A closure that returns the content of the toast.
+  /// - Returns: The original view with the toast message.
   func toast<C: View>(
     isPresented: Binding<Bool>,
     style: Aghs.Bag.Toast.Style = .default(),
@@ -49,6 +57,7 @@ public extension Ax where T: View {
 
 public extension Aghs.Bag {
   
+  /// A view modifier that adds a toast message to the view.
   struct ToastModifier<C: View>: ViewModifier {
     public var isPresented: Binding<Bool>
     public let style: Toast.Style

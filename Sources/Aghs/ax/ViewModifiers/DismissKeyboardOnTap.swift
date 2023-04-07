@@ -31,6 +31,9 @@ import SwiftUI
 #if canImport(UIKit)
 public extension Ax where T: View {
   
+  /// Dismiss the keyboard when the view is tapped.
+  ///
+  /// - Returns: A view with a tap gesture that dismisses the keyboard.
   func dismissKeyboardOnTap() -> some View {
     base.modifier(Aghs.Bag.DismissKeyboardOnTap())
   }
@@ -38,6 +41,7 @@ public extension Ax where T: View {
 
 public extension Aghs.Bag {
   
+  /// A view modifier that dismisses the keyboard when the modified view is tapped.
   struct DismissKeyboardOnTap: ViewModifier {
     
     public func body(content: Content) -> some View {

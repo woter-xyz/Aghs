@@ -33,16 +33,16 @@ extension CGFloat: Axable {}
 public extension Ax where T == CGFloat {
   
   #if canImport(UIKit)
-  /// Rational width with referWidth.
-  /// - Parameter referWidth: Default is 375.
-  func widthRatio(_ referWidth: CGFloat = 375.0) -> CGFloat {
-    return UIScreen.ax.width * base.self / referWidth
+  /// Calculates the proportional width based on a reference width.
+  /// - Parameter referenceWidth: The width to which the proportion is calculated. Default is 375.
+  func proportionalWidth(_ referenceWidth: CGFloat = 375.0) -> CGFloat {
+    return UIScreen.ax.width * base.self / referenceWidth
   }
   
-  /// Rational height with referHeight.
-  /// - Parameter referHeight: Default is 812.
-  func heightRatio(_ referHeight: CGFloat = 812.0) -> CGFloat {
-    return UIScreen.ax.height * base.self / referHeight
+  /// Calculates the proportional height based on a reference height.
+  /// - Parameter referenceHeight: The height to which the proportion is calculated. Default is 812.
+  func proportionalHeight(_ referenceHeight: CGFloat = 812.0) -> CGFloat {
+    return UIScreen.ax.height * base.self / referenceHeight
   }
   #endif
 }
