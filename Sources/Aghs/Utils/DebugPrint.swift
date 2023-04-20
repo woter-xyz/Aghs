@@ -27,7 +27,7 @@
 
 import Foundation
 
-public extension Aghs {
+extension Aghs {
   
   /// Print messages in debug mode with file, method, line number, and a custom log type.
   ///
@@ -37,7 +37,7 @@ public extension Aghs {
   ///   - file: The name of the file where the log function is called (default is the current file name).
   ///   - method: The name of the method where the log function is called (default is the current method name).
   ///   - line: The line number where the log function is called (default is the current line number).
-  static func print<T>(
+  public static func print<T>(
     _ message: T...,
     type: Aghs.Bag.LogType = .info,
     file: String = #file,
@@ -52,10 +52,10 @@ public extension Aghs {
   }
 }
 
-public extension Aghs.Bag {
+extension Aghs.Bag {
   
   /// Enum that represents log message types with corresponding symbols and labels.
-  enum LogType: String {
+  public enum LogType: String {
     case info = "🍺 [INFO]:"
     case warning = "⚠️ [WARNING]:"
     case error = "❌ [ERROR]:"

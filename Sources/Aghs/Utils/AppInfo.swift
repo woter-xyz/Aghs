@@ -27,10 +27,10 @@
 
 import Foundation
 
-public extension Aghs {
+extension Aghs {
   
   /// Contains information about the app such as ``displayName``, ``version``, and ``buildVersion``.
-  struct AppInfo {
+  public struct AppInfo {
     
     /// The display name of the app.
     public static let displayName =

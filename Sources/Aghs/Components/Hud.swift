@@ -28,18 +28,65 @@
 import Foundation
 import SwiftUI
 
-public extension Ax where T: View {
+extension Ax where T: View {
   
   /// Attach a Hud to the view.
   ///
   /// - Parameter hud: A `Hud` instance to be attached to the view.
   /// - Returns: The original view with the Hud modifier applied.
-  func hud(_ hud: Hud) -> some View {
+  public func hud(_ hud: Hud) -> some View {
     base.modifier(Aghs.Bag.HudModifier(hud: hud))
   }
 }
 
 /// A Hud that can be displayed on a view.
+///
+/// Best practice example:
+///
+/// First, add a Hud instance to app:
+///
+/// ```swift
+/// @main
+/// struct Aghs_exampleApp: App {
+///   @StateObject private var hud = Hud()
+///
+///   var body: some Scene {
+///     WindowGroup {
+///       HomeView()
+///         .ax.hud(hud)
+///     }
+///   }
+/// }
+/// ```
+///
+/// Then you can use hud in any view of the app:
+///
+/// ```swift
+/// struct HudView: View {
+///   @EnvironmentObject var hud: Hud
+///
+///   var body: some View {
+///     VStack {
+///       Button("Show") {
+///         hud.show(style: .default()) {
+///           DismissButton()
+///         }
+///       }
+///       .padding(50)
+///     }
+///   }
+/// }
+///
+/// struct DismissButton: View {
+///   @EnvironmentObject var hud: Hud
+///
+///   var body: some View {
+///     Button("Dismiss") {
+///       hud.hide(.spring())
+///     }
+///   }
+/// }
+/// ```
 @MainActor
 public final class Hud: ObservableObject {
   @Published public var isPresented = false
@@ -76,10 +123,10 @@ public final class Hud: ObservableObject {
   }
 }
 
-public extension Aghs.Bag {
+extension Aghs.Bag {
   
   /// A view modifier that adds a Hud to the view.
-  struct HudModifier: ViewModifier {
+  public struct HudModifier: ViewModifier {
     @StateObject public var hud: Hud
     
     public func body(content: Content) -> some View {
@@ -124,9 +171,9 @@ public protocol HudStyle {
   var duration: Double? { get set }
 }
 
-public extension HudStyle where Self == Aghs.Bag.DefaultHudStyle {
+extension HudStyle where Self == Aghs.Bag.DefaultHudStyle {
   
-  static func `default`(
+  public static func `default`(
     background: any View = Color.black.opacity(0.6),
     interactiveHide: Bool = true,
     alignment: Alignment = .center,
@@ -143,9 +190,9 @@ public extension HudStyle where Self == Aghs.Bag.DefaultHudStyle {
   }
 }
 
-public extension Aghs.Bag {
+extension Aghs.Bag {
   
-  struct DefaultHudStyle: HudStyle {
+  public struct DefaultHudStyle: HudStyle {
     public var background: any View
     public var interactiveHide: Bool
     public var alignment: Alignment

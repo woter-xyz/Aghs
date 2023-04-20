@@ -28,21 +28,23 @@
 import SwiftUI
 
 #if canImport(UIKit)
-public extension Ax where T: View {
+extension Ax where T: View {
   
   /// Add a custom navigation back button to the view.
   ///
   /// - Parameter label: A closure that returns the custom button's view.
   /// - Returns: The original view with the custom navigation back button.
-  func customNavBackButton<C: View>(label: @escaping () -> C) -> some View {
+  @available(iOS 16, *)
+  public func customNavBackButton<C: View>(label: @escaping () -> C) -> some View {
     base.modifier(Aghs.Bag.CustomNavBackButton(label: label))
   }
 }
 
-public extension Aghs.Bag {
+extension Aghs.Bag {
   
   /// A view modifier that adds a custom navigation back button to the view.
-  struct CustomNavBackButton<C: View>: ViewModifier {
+  @available(iOS 16, *)
+  public struct CustomNavBackButton<C: View>: ViewModifier {
     @ViewBuilder public var label: () -> C
     @Environment(\.dismiss) private var dismiss
     
@@ -65,9 +67,9 @@ public extension Aghs.Bag {
 /**
  Solve the problem that the interactive pop gesture(swipe from the left edge) fails when customizing the back button of the navigation bar.
  */
-public extension UINavigationController {
+extension UINavigationController {
   
-  override func viewDidLoad() {
+  public override func viewDidLoad() {
     super.viewDidLoad()
     interactivePopGestureRecognizer?.delegate = nil
   }

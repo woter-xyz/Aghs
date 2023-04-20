@@ -28,21 +28,21 @@
 import Foundation
 import SwiftUI
 
-public extension Ax where T: View {
+extension Ax where T: View {
   
   /// Retrieve the size of the view and call a callback function with the size.
   ///
   /// - Parameter callback: A closure that takes the size of the view as a parameter.
   /// - Returns: The original view with a background modifier that captures the view's size.
-  func getSize(_ callback: @escaping (CGSize) -> Void) -> some View {
+  public func getSize(_ callback: @escaping (CGSize) -> Void) -> some View {
     base.modifier(Aghs.Bag.SizeModifer(callback: callback))
   }
 }
 
-public extension Aghs.Bag {
+extension Aghs.Bag {
   
   /// A view modifier that captures the size of the view and calls a callback function with the size.
-  struct SizeModifer: ViewModifier {
+  public struct SizeModifer: ViewModifier {
     public let callback: (CGSize) -> Void
     
     public func body(content: Content) -> some View {
@@ -62,7 +62,7 @@ public extension Aghs.Bag {
   }
   
   /// A preference key for storing the view's bounds.
-  struct BoundsPreferenceKey: PreferenceKey {
+  public struct BoundsPreferenceKey: PreferenceKey {
     
     public static var defaultValue: CGRect = .zero
     

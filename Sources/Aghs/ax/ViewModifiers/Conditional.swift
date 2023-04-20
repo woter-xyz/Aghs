@@ -28,7 +28,7 @@
 import Foundation
 import SwiftUI
 
-public extension View {
+ extension View {
   
   /// Conditionally transform a view based on a boolean condition.
   ///
@@ -46,7 +46,7 @@ public extension View {
   ///   - elseTransform: A closure to apply when `condition` is `false`.
   ///   If it's nil, return self.
   /// - Returns: The original or transformed view.
-  @ViewBuilder func ax_if<Content: View>(
+  @ViewBuilder public func ax_if<Content: View>(
     _ condition: Bool,
     apply transform: (Self) -> Content,
     else elseTransform: ((Self) -> Content)? = nil
@@ -68,7 +68,7 @@ public extension View {
   ///   - value: An optional value.
   ///   - transform: A closure to apply when `value` has some value.
   /// - Returns: Transformed view.
-  @ViewBuilder func ax_ifLet<V>(
+  @ViewBuilder public func ax_ifLet<V>(
     _ value: V?,
     apply transform: (Self, V) -> some View
   ) -> some View {

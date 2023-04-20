@@ -27,7 +27,7 @@
 
 import SwiftUI
 
-public extension Aghs {
+extension Aghs {
   
   /// Previews the specified view on multiple devices.
   ///
@@ -36,7 +36,7 @@ public extension Aghs {
   ///   - devices: An array of `PreviewDevices` to preview the view on.
   ///   - viewName: An optional name for the view that is displayed in the preview (default is an empty string).
   /// - Returns: A view group containing the specified view previewed on the specified devices.
-  static func previews(
+  public static func previews(
     _ preview: some View,
     devices: [Bag.PreviewDevices],
     viewName: String = ""
@@ -51,10 +51,10 @@ public extension Aghs {
   }
 }
 
-public extension Aghs.Bag {
+extension Aghs.Bag {
   
   /// A list of devices to be used for SwiftUI previews.
-  enum PreviewDevices: String {
+  public enum PreviewDevices: String {
     
     case iPhone_13_Pro = "iPhone 13 Pro"
     case iPhone_13_Pro_Max = "iPhone 13 Pro Max"

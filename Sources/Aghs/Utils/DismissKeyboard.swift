@@ -28,9 +28,11 @@
 #if canImport(UIKit)
 import UIKit
 
-public extension Aghs {
+extension Aghs {
   
-  static func dismissKeyboard() {
+  /// Dismisses the keyboard for any active text input.
+  @available(iOS 16, *)
+  public static func dismissKeyboard() {
     UIApplication.shared.sendAction(
       #selector(UIResponder.resignFirstResponder),
       to: nil, from: nil, for: nil

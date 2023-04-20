@@ -29,7 +29,7 @@ import Foundation
 import SwiftUI
 
 #if canImport(UIKit)
-public extension Ax where T: View {
+extension Ax where T: View {
   
   /// Apply rounded corners to specific corners of the view.
   ///
@@ -37,15 +37,17 @@ public extension Ax where T: View {
   ///   - radius: The corner radius to be applied.
   ///   - corners: The specific corners to be rounded.
   /// - Returns: The original view with rounded corners.
-  func roundedCorners(_ radius: CGFloat, corners: UIRectCorner) -> some View {
+  @available(iOS 16, *)
+  public func roundedCorners(_ radius: CGFloat, corners: UIRectCorner) -> some View {
     base.clipShape(Aghs.Bag.RoundedCorners(radius: radius, corners: corners))
   }
 }
 
-public extension Aghs.Bag {
+extension Aghs.Bag {
   
   /// A shape representing a rectangle with rounded corners.
-  struct RoundedCorners: Shape {
+  @available(iOS 16, *)
+  public struct RoundedCorners: Shape {
     public var radius: CGFloat = .infinity
     public var corners: UIRectCorner = .allCorners
     

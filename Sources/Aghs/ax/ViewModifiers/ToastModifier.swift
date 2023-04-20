@@ -28,7 +28,7 @@
 import Foundation
 import SwiftUI
 
-public extension Ax where T: View {
+extension Ax where T: View {
   
   /// Display a toast message on top of the current view.
   ///
@@ -38,7 +38,7 @@ public extension Ax where T: View {
   ///   - position: The position of the toast on the screen.
   ///   - content: A closure that returns the content of the toast.
   /// - Returns: The original view with the toast message.
-  func toast<C: View>(
+  public func toast<C: View>(
     isPresented: Binding<Bool>,
     style: Aghs.Bag.Toast.Style = .default(),
     position: Aghs.Bag.Toast.Position = .top,
@@ -55,17 +55,17 @@ public extension Ax where T: View {
   }
 }
 
-public extension Aghs.Bag {
+extension Aghs.Bag {
   
   /// A view modifier that adds a toast message to the view.
-  struct ToastModifier<C: View>: ViewModifier {
+  public struct ToastModifier<C: View>: ViewModifier {
     public var isPresented: Binding<Bool>
     public let style: Toast.Style
     public let postion: Toast.Position
     public let toastContent: () -> C
     @State private var contentSize = CGSize.zero
     
-    init(
+    public init(
       isPresented: Binding<Bool>,
       style: Toast.Style,
       postion: Toast.Position,
@@ -107,15 +107,15 @@ public extension Aghs.Bag {
   }
 }
 
-public extension Aghs.Bag {
+extension Aghs.Bag {
   
-  struct Toast {
+  public struct Toast {
     public enum Position {
       case top
       case center
       case bottom
       
-      var alignment: Alignment {
+      public var alignment: Alignment {
         switch self {
         case .top:
           return .top
@@ -126,7 +126,7 @@ public extension Aghs.Bag {
         }
       }
       
-      var transition: AnyTransition {
+      public var transition: AnyTransition {
         switch self {
         case .top:
           return .opacity
