@@ -27,17 +27,20 @@
 
 import Foundation
 
-public extension Aghs {
+extension Aghs {
   
-  /// Get info of app such as ``version``, ``displayName``, etc.
-  struct AppInfo {
+  /// Contains information about the app such as ``displayName``, ``version``, and ``buildVersion``.
+  public struct AppInfo {
     
+    /// The display name of the app.
     public static let displayName =
     Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String
     
+    /// The version number of the app.
     public static let version =
     Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
     
+    /// The build version number of the app.
     public static let buildVersion =
     Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
   }

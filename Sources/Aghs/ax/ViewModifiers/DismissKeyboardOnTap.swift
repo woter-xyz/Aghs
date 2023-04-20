@@ -1,8 +1,8 @@
 //
-//  IntEx.swift
+//  DismissKeyboardOnTap.swift
 //  
 //
-//  Created by zzzwco on 2022/11/11.
+//  Created by zzzwco on 2023/3/29.
 //
 //  Copyright (c) 2021 zzzwco <zzzwco@outlook.com>
 //
@@ -28,21 +28,31 @@
 import Foundation
 import SwiftUI
 
-extension Int: Axable {}
-
-public extension Ax where T == Int {
+#if canImport(UIKit)
+extension Ax where T: View {
   
-  #if canImport(UIKit)
-  /// Rational width with referWidth.
-  /// - Parameter referWidth: Default is 375.
-  func widthRatio(_ referWidth: CGFloat = 375.0) -> CGFloat {
-    return CGFloat(base.self).ax.widthRatio(referWidth)
+  /// Dismiss the keyboard when the view is tapped.
+  ///
+  /// - Returns: A view with a tap gesture that dismisses the keyboard.
+  @available(iOS 16, *)
+  public func dismissKeyboardOnTap() -> some View {
+    base.modifier(Aghs.Bag.DismissKeyboardOnTap())
   }
-  
-  /// Rational height with referHeight.
-  /// - Parameter referHeight: Default is 812.
-  func heightRatio(_ referHeight: CGFloat = 812.0) -> CGFloat {
-    return CGFloat(base.self).ax.heightRatio(referHeight)
-  }
-  #endif
 }
+
+extension Aghs.Bag {
+  
+  /// A view modifier that dismisses the keyboard when the modified view is tapped.
+  @available(iOS 16, *)
+  public struct DismissKeyboardOnTap: ViewModifier {
+    
+    public func body(content: Content) -> some View {
+      content
+        .contentShape(Rectangle())
+        .onTapGesture {
+          Aghs.dismissKeyboard()
+        }
+    }
+  }
+}
+#endif

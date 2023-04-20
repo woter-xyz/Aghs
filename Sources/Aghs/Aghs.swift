@@ -29,35 +29,21 @@ import Foundation
 import SwiftUI
 
 /// Source of **Aghs**.
-///
-/// Example:
-///
-/// ```swift
-///
-/// ```
 public struct Aghs {}
 
-public extension Aghs {
+extension Aghs {
   
   /// A storage bag for package itself that makes using `Aghs` enjoyable.
-  /// There's no need to use it.
-  struct Bag {}
+  public struct Bag {}
 }
 
 
 /// Source of **ax**.
-///
-/// Example:
-///
-///```swift
-///
-///```
-///
 public struct Ax<T> {
 
   public let base: T
 
-  init(_ base: T) {
+  public init(_ base: T) {
     self.base = base
   }
 }
@@ -71,22 +57,22 @@ public protocol Axable {
   static var ax: T.Type { get }
 }
 
-public extension Axable {
+extension Axable {
 
-  var ax: Ax<Self> {
+  public var ax: Ax<Self> {
     Ax(self)
   }
   
-  static var ax: Ax<Self>.Type {
+  public static var ax: Ax<Self>.Type {
     Ax.self
   }
 }
 
 extension NSObject: Axable {}
 
-public extension View {
+extension View {
   
-  var ax: Ax<some View> {
+  public var ax: Ax<some View> {
     Ax(self)
   }
 }

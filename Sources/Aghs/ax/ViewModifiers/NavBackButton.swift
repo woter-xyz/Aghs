@@ -1,8 +1,8 @@
 //
-//  ViewSize.swift
+//  NavBackButton.swift
 //  
 //
-//  Created by zzzwco on 2022/11/16.
+//  Created by zzzwco on 2023/3/29.
 //
 //  Copyright (c) 2021 zzzwco <zzzwco@outlook.com>
 //
@@ -25,49 +25,53 @@
 //  SOFTWARE.
 //
 
-import Foundation
 import SwiftUI
 
+#if canImport(UIKit)
 extension Ax where T: View {
   
-  /// Retrieve the size of the view and call a callback function with the size.
+  /// Add a custom navigation back button to the view.
   ///
-  /// - Parameter callback: A closure that takes the size of the view as a parameter.
-  /// - Returns: The original view with a background modifier that captures the view's size.
-  public func getSize(_ callback: @escaping (CGSize) -> Void) -> some View {
-    base.modifier(Aghs.Bag.SizeModifer(callback: callback))
+  /// - Parameter label: A closure that returns the custom button's view.
+  /// - Returns: The original view with the custom navigation back button.
+  @available(iOS 16, *)
+  public func customNavBackButton<C: View>(label: @escaping () -> C) -> some View {
+    base.modifier(Aghs.Bag.CustomNavBackButton(label: label))
   }
 }
 
 extension Aghs.Bag {
   
-  /// A view modifier that captures the size of the view and calls a callback function with the size.
-  public struct SizeModifer: ViewModifier {
-    public let callback: (CGSize) -> Void
+  /// A view modifier that adds a custom navigation back button to the view.
+  @available(iOS 16, *)
+  public struct CustomNavBackButton<C: View>: ViewModifier {
+    @ViewBuilder public var label: () -> C
+    @Environment(\.dismiss) private var dismiss
     
     public func body(content: Content) -> some View {
       content
-        .background(
-          GeometryReader { geometryProxy in
-            Color.clear
-              .anchorPreference(key: BoundsPreferenceKey.self, value: .bounds) {
-                geometryProxy[$0]
-              }
-              .onPreferenceChange(BoundsPreferenceKey.self) {
-                callback($0.size)
-              }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+          ToolbarItem(placement: .navigationBarLeading) {
+            Button {
+              dismiss()
+            } label: {
+              label()
+            }
           }
-        )
-    }
-  }
-  
-  /// A preference key for storing the view's bounds.
-  public struct BoundsPreferenceKey: PreferenceKey {
-    
-    public static var defaultValue: CGRect = .zero
-    
-    public static func reduce(value: inout CGRect, nextValue: () -> CGRect) {
-      value = nextValue()
+        }
     }
   }
 }
+
+/**
+ Solve the problem that the interactive pop gesture(swipe from the left edge) fails when customizing the back button of the navigation bar.
+ */
+extension UINavigationController {
+  
+  public override func viewDidLoad() {
+    super.viewDidLoad()
+    interactivePopGestureRecognizer?.delegate = nil
+  }
+}
+#endif

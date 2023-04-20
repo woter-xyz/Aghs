@@ -1,5 +1,5 @@
 //
-//  ViewModifiers.swift
+//  Conditional.swift
 //  
 //
 //  Created by zzzwco on 2022/7/23.
@@ -28,53 +28,54 @@
 import Foundation
 import SwiftUI
 
-public extension Ax where T: View {
+ extension View {
   
-  /// Transfrom view according to different conditions.
+  /// Conditionally transform a view based on a boolean condition.
   ///
   /// > Warning:
   /// Avoid using this modifier whenever possible.
   /// As it will break identity of view and cause unexpected issues,
   /// such as bad animation, poor performance, etc.
   ///
-  /// Learn about SwiftUI Identity: [Demystify SwiftUI](https://developer.apple.com/videos/play/wwdc2021/10022/)
+  /// Learn about SwiftUI Identity:
+  /// [Demystify SwiftUI](https://developer.apple.com/videos/play/wwdc2021/10022/)
   /// 
   /// - Parameters:
   ///   - condition: A `true` or `false` value.
-  ///   - transform: Apply when `condition` is `true`.
-  ///   - elseTransform: Apply when `condition` is `false`.
-  ///     If it's nil, return self.
+  ///   - transform: A closure to apply when `condition` is `true`.
+  ///   - elseTransform: A closure to apply when `condition` is `false`.
+  ///   If it's nil, return self.
   /// - Returns: The original or transformed view.
-  @ViewBuilder func `if`<Content: View>(
+  @ViewBuilder public func ax_if<Content: View>(
     _ condition: Bool,
-    apply transform: (T) -> Content,
-    else elseTransform: ((T) -> Content)? = nil
+    apply transform: (Self) -> Content,
+    else elseTransform: ((Self) -> Content)? = nil
   ) -> some View {
     if condition {
-      transform(base)
+      transform(self)
     } else {
       if let elseTransform {
-        elseTransform(base)
+        elseTransform(self)
       } else {
-        base
+        self
       }
     }
   }
 
   
-  /// Transform according to an optional value that could be unwrapped or not.
+  /// Transform the view based on an optional value that can be unwrapped or not.
   /// - Parameters:
   ///   - value: An optional value.
-  ///   - transform: Apply when `value` has some value.
+  ///   - transform: A closure to apply when `value` has some value.
   /// - Returns: Transformed view.
-  @ViewBuilder func ifLet<V>(
+  @ViewBuilder public func ax_ifLet<V>(
     _ value: V?,
-    apply transform: (T, V) -> some View
+    apply transform: (Self, V) -> some View
   ) -> some View {
     if let value {
-      transform(base, value)
+      transform(self, value)
     } else {
-      base
+      self
     }
   }
 }

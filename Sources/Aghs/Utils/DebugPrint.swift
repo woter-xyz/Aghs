@@ -27,20 +27,38 @@
 
 import Foundation
 
-public extension Aghs {
+extension Aghs {
   
-  /// Print in debug mode.
-  static func print<T>(
-    _ msg: T...,
-    symbol: String = "🍺🍺🍺",
+  /// Print messages in debug mode with file, method, line number, and a custom log type.
+  ///
+  /// - Parameters:
+  ///   - message: The message to log. Supports variadic input.
+  ///   - type: A `LogType` to classify the log message (default is .info).
+  ///   - file: The name of the file where the log function is called (default is the current file name).
+  ///   - method: The name of the method where the log function is called (default is the current method name).
+  ///   - line: The line number where the log function is called (default is the current line number).
+  public static func print<T>(
+    _ message: T...,
+    type: Aghs.Bag.LogType = .info,
     file: String = #file,
     method: String = #function,
     line: Int = #line
   ) {
     #if DEBUG
-    let msg = msg.map { "\($0)\n" }.joined()
-    let content = "\(Date()) \((file as NSString).lastPathComponent)[\(line)], \(method): \n\(msg)\n"
-    Swift.print("\(symbol) \(content)")
+    let message = message.map { "\($0)\n" }.joined()
+    let content = "\(Date()), \((file as NSString).lastPathComponent)[\(line)], \(method): \n\(message)\n"
+    Swift.print("\(type.rawValue) \(content)")
     #endif
+  }
+}
+
+extension Aghs.Bag {
+  
+  /// Enum that represents log message types with corresponding symbols and labels.
+  public enum LogType: String {
+    case info = "🍺 [INFO]:"
+    case warning = "⚠️ [WARNING]:"
+    case error = "❌ [ERROR]:"
+    case success = "✅ [SUCCESS]:"
   }
 }

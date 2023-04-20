@@ -1,8 +1,8 @@
 //
-//  Hud.swift
+//  RoundCorner.swift
 //  
 //
-//  Created by zzzwco on 2022/11/16.
+//  Created by zzzwco on 2023/2/16.
 //
 //  Copyright (c) 2021 zzzwco <zzzwco@outlook.com>
 //
@@ -28,44 +28,37 @@
 import Foundation
 import SwiftUI
 
-public extension Ax where T: View {
+#if canImport(UIKit)
+extension Ax where T: View {
   
-  func hud(_ hud: Hud) -> some View {
-    base.modifier(Aghs.Bag.HudModifier(hud: hud))
+  /// Apply rounded corners to specific corners of the view.
+  ///
+  /// - Parameters:
+  ///   - radius: The corner radius to be applied.
+  ///   - corners: The specific corners to be rounded.
+  /// - Returns: The original view with rounded corners.
+  @available(iOS 16, *)
+  public func roundedCorners(_ radius: CGFloat, corners: UIRectCorner) -> some View {
+    base.clipShape(Aghs.Bag.RoundedCorners(radius: radius, corners: corners))
   }
 }
 
-public final class Hud: ObservableObject {
-  @Published public var isPresented = false
-  public var content: AnyView = AnyView(EmptyView())
+extension Aghs.Bag {
   
-  public init() {}
-  
-  public func show(content: () -> some View) {
-    isPresented = true
-    self.content = AnyView(content())
-  }
-}
-
-public extension Aghs.Bag {
-  
-  struct HudModifier: ViewModifier {
-    @StateObject public var hud: Hud
+  /// A shape representing a rectangle with rounded corners.
+  @available(iOS 16, *)
+  public struct RoundedCorners: Shape {
+    public var radius: CGFloat = .infinity
+    public var corners: UIRectCorner = .allCorners
     
-    public func body(content: Content) -> some View {
-      ZStack {
-        content
-        
-        if hud.isPresented {
-          Color.black.opacity(0.6)
-            .ignoresSafeArea()
-            .onTapGesture {
-              hud.isPresented = false
-            }
-          hud.content
-        }
-      }
-      .environmentObject(hud)
+    public func path(in rect: CGRect) -> Path {
+      let path = UIBezierPath(
+        roundedRect: rect,
+        byRoundingCorners: corners,
+        cornerRadii: CGSize(width: radius, height: radius)
+      )
+      return Path(path.cgPath)
     }
   }
 }
+#endif
