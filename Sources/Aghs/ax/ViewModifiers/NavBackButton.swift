@@ -28,13 +28,14 @@
 import SwiftUI
 
 #if canImport(UIKit)
+import UIKit
+
 extension Ax where T: View {
   
   /// Add a custom navigation back button to the view.
   ///
   /// - Parameter label: A closure that returns the custom button's view.
   /// - Returns: The original view with the custom navigation back button.
-  @available(iOS 16, *)
   public func customNavBackButton<C: View>(label: @escaping () -> C) -> some View {
     base.modifier(Aghs.Bag.CustomNavBackButton(label: label))
   }
@@ -43,7 +44,6 @@ extension Ax where T: View {
 extension Aghs.Bag {
   
   /// A view modifier that adds a custom navigation back button to the view.
-  @available(iOS 16, *)
   public struct CustomNavBackButton<C: View>: ViewModifier {
     @ViewBuilder public var label: () -> C
     @Environment(\.dismiss) private var dismiss

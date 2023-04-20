@@ -25,19 +25,15 @@
 //  SOFTWARE.
 //
 
-import Foundation
-import SwiftUI
-
 #if canImport(UIKit)
+import UIKit
 
 extension Ax where T == UIScreen {
   
   /// Retrieves the device's screen width.
-  @available(iOS 16, *)
   public static let width = UIScreen.main.bounds.width
 
   /// Retrieves the device's screen height.
-  @available(iOS 16, *)
   public static let height = UIScreen.main.bounds.height
 }
 #endif
