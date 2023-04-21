@@ -1,7 +1,5 @@
 # Aghs
 
-![Aghs-logo](https://woter-xyz.github.io/Aghs/images/aghs-logo@2x.png)
-
 Aghs is a pure SwiftUI toolkit to boost productivity.
 
 [![Platforms](https://img.shields.io/badge/platform-iOS%2016.0%20%7C%20macOS%2013.0-blue)](https://github.com/woter-xyz/Aghs)
