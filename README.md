@@ -11,8 +11,8 @@ Aghs is a pure SwiftUI toolkit to boost productivity.
 
 # Requirements
 
-- **iOS** 16.0+ | macOS 13.0+
-- Swift 5.8+
+- **iOS** 16.0+ | **macOS** 13.0+
+- **Swift** 5.8+
 
 # Installation
 
