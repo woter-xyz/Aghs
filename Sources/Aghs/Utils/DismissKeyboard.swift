@@ -29,9 +29,7 @@ import Foundation
 
 #if canImport(UIKit)
 import UIKit
-#endif
-
-#if canImport(AppKit)
+#elseif canImport(AppKit)
 import AppKit
 #endif
 

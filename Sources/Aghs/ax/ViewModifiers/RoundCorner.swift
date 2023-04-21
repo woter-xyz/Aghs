@@ -29,6 +29,11 @@ import SwiftUI
 
 #if canImport(UIKit)
 import UIKit
+public typealias RectCorner = UIRectCorner
+#elseif canImport(AppKit)
+import AppKit
+public typealias RectCorner = Aghs.Bag.NSRectCorner
+#endif
 
 extension Ax where T: View {
   
@@ -38,7 +43,7 @@ extension Ax where T: View {
   ///   - radius: The corner radius to be applied.
   ///   - corners: The specific corners to be rounded.
   /// - Returns: The original view with rounded corners.
-  public func roundedCorners(_ radius: CGFloat, corners: UIRectCorner) -> some View {
+  public func roundedCorners(_ radius: CGFloat, corners: RectCorner) -> some View {
     base.clipShape(Aghs.Bag.RoundedCorners(radius: radius, corners: corners))
   }
 }
@@ -47,17 +52,74 @@ extension Aghs.Bag {
   
   /// A shape representing a rectangle with rounded corners.
   public struct RoundedCorners: Shape {
-    public var radius: CGFloat = .infinity
-    public var corners: UIRectCorner = .allCorners
+    public var radius: CGFloat = .zero
+    public var corners: RectCorner = .allCorners
     
     public func path(in rect: CGRect) -> Path {
-      let path = UIBezierPath(
+      var path: Path
+      #if canImport(UIKit)
+      let bezierPath = UIBezierPath(
         roundedRect: rect,
         byRoundingCorners: corners,
         cornerRadii: CGSize(width: radius, height: radius)
       )
-      return Path(path.cgPath)
+      path = Path(bezierPath.cgPath)
+      #elseif canImport(AppKit)
+      path = .init()
+      let p1 = CGPoint(x: rect.minX, y: corners.contains(.topLeft) ? rect.minY + radius  : rect.minY )
+      let p2 = CGPoint(x: corners.contains(.topLeft) ? rect.minX + radius : rect.minX, y: rect.minY )
+
+      let p3 = CGPoint(x: corners.contains(.topRight) ? rect.maxX - radius : rect.maxX, y: rect.minY )
+      let p4 = CGPoint(x: rect.maxX, y: corners.contains(.topRight) ? rect.minY + radius  : rect.minY )
+
+      let p5 = CGPoint(x: rect.maxX, y: corners.contains(.bottomRight) ? rect.maxY - radius : rect.maxY )
+      let p6 = CGPoint(x: corners.contains(.bottomRight) ? rect.maxX - radius : rect.maxX, y: rect.maxY )
+
+      let p7 = CGPoint(x: corners.contains(.bottomLeft) ? rect.minX + radius : rect.minX, y: rect.maxY )
+      let p8 = CGPoint(x: rect.minX, y: corners.contains(.bottomLeft) ? rect.maxY - radius : rect.maxY )
+      
+      path.move(to: p1)
+      path.addArc(
+        tangent1End: CGPoint(x: rect.minX, y: rect.minY),
+        tangent2End: p2,
+        radius: radius
+      )
+      path.addLine(to: p3)
+      path.addArc(
+        tangent1End: CGPoint(x: rect.maxX, y: rect.minY),
+        tangent2End: p4,
+        radius: radius
+      )
+      path.addLine(to: p5)
+      path.addArc(
+        tangent1End: CGPoint(x: rect.maxX, y: rect.maxY),
+        tangent2End: p6,
+        radius: radius
+      )
+      path.addLine(to: p7)
+      path.addArc(
+        tangent1End: CGPoint(x: rect.minX, y: rect.maxY),
+        tangent2End: p8,
+        radius: radius
+      )
+      path.closeSubpath()
+      #endif
+      
+      return path
     }
   }
+  
+  public struct NSRectCorner: OptionSet {
+    public let rawValue: Int
+    
+    public init(rawValue: Int) {
+      self.rawValue = rawValue
+    }
+    
+    public static let topLeft = NSRectCorner(rawValue: 1 << 0)
+    public static let topRight = NSRectCorner(rawValue: 1 << 1)
+    public static let bottomLeft = NSRectCorner(rawValue: 1 << 2)
+    public static let bottomRight = NSRectCorner(rawValue: 1 << 3)
+    public static let allCorners: NSRectCorner = [.topLeft, .topRight, .bottomLeft, .bottomRight]
+  }
 }
-#endif
