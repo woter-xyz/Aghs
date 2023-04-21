@@ -29,10 +29,10 @@ import SwiftUI
 
 #if canImport(UIKit)
 import UIKit
-public typealias RectCorner = UIRectCorner
+//public typealias RectCorner = UIRectCorner
 #elseif canImport(AppKit)
 import AppKit
-public typealias RectCorner = Aghs.Bag.NSRectCorner
+//public typealias RectCorner = Aghs.Bag.NSRectCorner
 #endif
 
 extension Ax where T: View {
@@ -43,12 +43,17 @@ extension Ax where T: View {
   ///   - radius: The corner radius to be applied.
   ///   - corners: The specific corners to be rounded.
   /// - Returns: The original view with rounded corners.
-  public func roundedCorners(_ radius: CGFloat, corners: RectCorner) -> some View {
+  public func roundedCorners(_ radius: CGFloat, corners: Aghs.Bag.RectCorner) -> some View {
     base.clipShape(Aghs.Bag.RoundedCorners(radius: radius, corners: corners))
   }
 }
 
 extension Aghs.Bag {
+  #if canImport(UIKit)
+  public typealias RectCorner = UIRectCorner
+  #elseif canImport(AppKit)
+  public typealias RectCorner = Aghs.Bag.NSRectCorner
+  #endif
   
   /// A shape representing a rectangle with rounded corners.
   public struct RoundedCorners: Shape {
