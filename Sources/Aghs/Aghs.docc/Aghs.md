@@ -24,9 +24,7 @@ Aghs is composed of three parts:
 
 ## Topics
 
-### ax
-
-- <doc:Extensions>
+### ViewModifiers
 - <doc:ViewModifiers>
 
 ### Components

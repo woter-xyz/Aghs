@@ -29,6 +29,9 @@ import SwiftUI
 
 #if canImport(UIKit)
 import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
 
 extension Ax where T: View {
   
@@ -52,7 +55,7 @@ extension Aghs.Bag {
       content
         .navigationBarBackButtonHidden(true)
         .toolbar {
-          ToolbarItem(placement: .navigationBarLeading) {
+          ToolbarItem(placement: placement) {
             Button {
               dismiss()
             } label: {
@@ -61,9 +64,18 @@ extension Aghs.Bag {
           }
         }
     }
+    
+    private var placement: ToolbarItemPlacement {
+      #if os(iOS)
+      .navigationBarLeading
+      #elseif os(macOS)
+      .navigation
+      #endif
+    }
   }
 }
 
+#if canImport(UIKit)
 /**
  Solve the problem that the interactive pop gesture(swipe from the left edge) fails when customizing the back button of the navigation bar.
  */
