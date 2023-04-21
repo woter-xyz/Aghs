@@ -25,18 +25,29 @@
 //  SOFTWARE.
 //
 
+import Foundation
+
 #if canImport(UIKit)
 import UIKit
+#endif
+
+#if canImport(AppKit)
+import AppKit
+#endif
 
 extension Aghs {
   
   /// Dismisses the keyboard for any active text input.
-  @available(iOS 16, *)
   public static func dismissKeyboard() {
+    #if canImport(UIKit)
     UIApplication.shared.sendAction(
       #selector(UIResponder.resignFirstResponder),
       to: nil, from: nil, for: nil
     )
+    #elseif canImport(AppKit)
+    DispatchQueue.main.async {
+      NSApp.keyWindow?.makeFirstResponder(nil)
+    }
+    #endif
   }
 }
-#endif
