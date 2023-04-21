@@ -6,9 +6,9 @@ A pure SwiftUI toolkit to boost productivity.
 
 Aghs is composed of three parts:
 
-- ax: Includes some Swift [Extensions](<doc:Extensions>) and SwiftUI [ViewModifiers](<doc:ViewModifiers>). 
+- [ViewModifiers](<doc:ViewModifiers>): Includes some SwiftUI view modifiers. 
 
-  The majority of features in **Extensions** and **ViewModifiers** should be invoked in the `.ax` style. Such as `UIScreen.ax.width` or `content.ax.customNavBackButton`. Some APIs, however, do not require the `.ax`, like `content.ax_if`.
+  The majority of features in **ViewModifiers** should be invoked in the `.ax` style. Such as `UIScreen.ax.width` or `content.ax.customNavBackButton`. Some APIs, however, do not require the `.ax`, like `content.ax_if`.
 
 - [Components](<doc:Components>): A selection of commonly used UI components.
 
@@ -24,20 +24,12 @@ Aghs is composed of three parts:
 
 ## Topics
 
-### ax
-
-- <doc:Extensions>
+### Essentials
 - <doc:ViewModifiers>
-
-### Components
-
 - <doc:Components>
-
-### Utils
-
 - <doc:Utils>
 
-### Others
+### Inessentials
 
 - <doc:Others>
 

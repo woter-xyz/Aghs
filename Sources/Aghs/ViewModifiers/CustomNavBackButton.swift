@@ -1,5 +1,5 @@
 //
-//  DismissKeyboardOnTap.swift
+//  NavBackButton.swift
 //  
 //
 //  Created by zzzwco on 2023/3/29.
@@ -29,29 +29,61 @@ import SwiftUI
 
 #if canImport(UIKit)
 import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
 
 extension Ax where T: View {
   
-  /// Dismiss the keyboard when the view is tapped.
+  /// Add a custom navigation back button to the view.
   ///
-  /// - Returns: A view with a tap gesture that dismisses the keyboard.
-  public func dismissKeyboardOnTap() -> some View {
-    base.modifier(Aghs.Bag.DismissKeyboardOnTap())
+  /// - Parameter label: A closure that returns the custom button's view.
+  /// - Returns: The original view with the custom navigation back button.
+  public func customNavBackButton<C: View>(label: @escaping () -> C) -> some View {
+    base.modifier(Aghs.Bag.CustomNavBackButton(label: label))
   }
 }
 
 extension Aghs.Bag {
   
-  /// A view modifier that dismisses the keyboard when the modified view is tapped.
-  public struct DismissKeyboardOnTap: ViewModifier {
+  /// A view modifier that adds a custom navigation back button to the view.
+  public struct CustomNavBackButton<C: View>: ViewModifier {
+    @ViewBuilder public var label: () -> C
+    @Environment(\.dismiss) private var dismiss
     
     public func body(content: Content) -> some View {
       content
-        .contentShape(Rectangle())
-        .onTapGesture {
-          Aghs.dismissKeyboard()
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+          ToolbarItem(placement: placement) {
+            Button {
+              dismiss()
+            } label: {
+              label()
+            }
+          }
         }
     }
+    
+    private var placement: ToolbarItemPlacement {
+      #if os(iOS)
+      .navigationBarLeading
+      #elseif os(macOS)
+      .navigation
+      #endif
+    }
+  }
+}
+
+#if canImport(UIKit)
+/**
+ Solve the problem that the interactive pop gesture(swipe from the left edge) fails when customizing the back button of the navigation bar.
+ */
+extension UINavigationController {
+  
+  public override func viewDidLoad() {
+    super.viewDidLoad()
+    interactivePopGestureRecognizer?.delegate = nil
   }
 }
 #endif

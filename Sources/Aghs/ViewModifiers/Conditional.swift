@@ -28,7 +28,7 @@
 import Foundation
 import SwiftUI
 
- extension View {
+extension View {
   
   /// Conditionally transform a view based on a boolean condition.
   ///
@@ -39,7 +39,7 @@ import SwiftUI
   ///
   /// Learn about SwiftUI Identity:
   /// [Demystify SwiftUI](https://developer.apple.com/videos/play/wwdc2021/10022/)
-  /// 
+  ///
   /// - Parameters:
   ///   - condition: A `true` or `false` value.
   ///   - transform: A closure to apply when `condition` is `true`.
@@ -61,7 +61,7 @@ import SwiftUI
       }
     }
   }
-
+  
   
   /// Transform the view based on an optional value that can be unwrapped or not.
   /// - Parameters:

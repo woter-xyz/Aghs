@@ -1,5 +1,5 @@
 //
-//  NavBackButton.swift
+//  DismissKeyboardOnTap.swift
 //  
 //
 //  Created by zzzwco on 2023/3/29.
@@ -29,49 +29,31 @@ import SwiftUI
 
 #if canImport(UIKit)
 import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
 
 extension Ax where T: View {
   
-  /// Add a custom navigation back button to the view.
+  /// Dismiss the keyboard when the view is tapped.
   ///
-  /// - Parameter label: A closure that returns the custom button's view.
-  /// - Returns: The original view with the custom navigation back button.
-  public func customNavBackButton<C: View>(label: @escaping () -> C) -> some View {
-    base.modifier(Aghs.Bag.CustomNavBackButton(label: label))
+  /// - Returns: A view with a tap gesture that dismisses the keyboard.
+  public func dismissKeyboardOnTap() -> some View {
+    base.modifier(Aghs.Bag.DismissKeyboardOnTap())
   }
 }
 
 extension Aghs.Bag {
   
-  /// A view modifier that adds a custom navigation back button to the view.
-  public struct CustomNavBackButton<C: View>: ViewModifier {
-    @ViewBuilder public var label: () -> C
-    @Environment(\.dismiss) private var dismiss
+  /// A view modifier that dismisses the keyboard when the modified view is tapped.
+  public struct DismissKeyboardOnTap: ViewModifier {
     
     public func body(content: Content) -> some View {
       content
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-          ToolbarItem(placement: .navigationBarLeading) {
-            Button {
-              dismiss()
-            } label: {
-              label()
-            }
-          }
+        .contentShape(Rectangle())
+        .onTapGesture {
+          Aghs.dismissKeyboard()
         }
     }
   }
 }
-
-/**
- Solve the problem that the interactive pop gesture(swipe from the left edge) fails when customizing the back button of the navigation bar.
- */
-extension UINavigationController {
-  
-  public override func viewDidLoad() {
-    super.viewDidLoad()
-    interactivePopGestureRecognizer?.delegate = nil
-  }
-}
-#endif
