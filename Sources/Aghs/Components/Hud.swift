@@ -50,6 +50,10 @@ extension Ax where T: View {
 /// struct Aghs_exampleApp: App {
 ///   @StateObject private var hud = Hud()
 ///
+///   init() {
+///     Hud.defaultStyle = .default(background: Color.yellow.opacity(0.35))
+///   }
+///
 ///   var body: some Scene {
 ///     WindowGroup {
 ///       HomeView()
@@ -68,7 +72,7 @@ extension Ax where T: View {
 ///   var body: some View {
 ///     VStack {
 ///       Button("Show") {
-///         hud.show(style: .default()) {
+///         hud.show {
 ///           DismissButton()
 ///         }
 ///       }
