@@ -159,6 +159,7 @@ extension Aghs.Bag {
         }
       }
       .environmentObject(hud)
+      .ignoresSafeArea()
     }
   }
 }
