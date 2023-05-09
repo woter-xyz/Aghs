@@ -92,6 +92,8 @@ public final class Hud: ObservableObject {
   @Published public var isPresented = false
   var content: any View = EmptyView()
   var style: HudStyle = .default()
+    
+  public static var defaultStyle: HudStyle = .default()
   
   public init() {}
   
@@ -102,7 +104,7 @@ public final class Hud: ObservableObject {
   ///   - animation: The animation to use when showing the Hud.
   ///   - content: A closure that returns the content of the Hud.
   public func show(
-    style: HudStyle = .default(),
+    style: HudStyle,
     animation: Animation? = .spring(),
     content: () -> some View
   ) {
@@ -111,6 +113,20 @@ public final class Hud: ObservableObject {
     withAnimation(animation) {
       isPresented = true
     }
+  }
+  
+  /// Display the Hud using the global default style, a specified animation, and content.
+  ///
+  /// This method uses the global `defaultStyle` as the Hud style.
+  ///
+  /// - Parameters:
+  ///   - animation: The animation to use when showing the Hud. Defaults to `.spring()`.
+  ///   - content: A closure that returns the content of the Hud.
+  public func show(
+    animation: Animation? = .spring(),
+    content: () -> some View
+  ) {
+    show(style: Self.defaultStyle, animation: animation, content: content)
   }
   
   /// Hide the Hud with the specified animation.
