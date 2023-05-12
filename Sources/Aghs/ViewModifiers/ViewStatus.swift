@@ -1,5 +1,5 @@
 //
-//  ViewStatusModifier.swift
+//  ViewStatus.swift
 //  
 //
 //  Created by zzzwco on 2023/5/11.
@@ -32,9 +32,9 @@ public extension Ax where T: View {
 
   func viewStatus<E: View, T: View, L: View>(
     _ status: ViewStatusManager,
-    emptyView: @escaping () -> E = { EmptyView() },
     toastView: @escaping () -> T = { EmptyView() },
-    loadingView: @escaping () -> L = { ProgressView() }
+    loadingView: @escaping () -> L = { ProgressView() },
+    emptyView: @escaping () -> E = { EmptyView() }
   ) -> some View {
     base
       .modifier(EnabledModifier())
@@ -42,14 +42,6 @@ public extension Ax where T: View {
       .modifier(ToastModifier { toastView() })
       .modifier(LoadingModifier { loadingView() })
       .environmentObject(status)
-  }
-}
-
-public struct ToastView<C: View>: View {
-  @ViewBuilder public var content: () -> C
-  
-  public var body: some View {
-    content()
   }
 }
 
@@ -63,7 +55,7 @@ public class ViewStatusManager: ObservableObject {
   @Published public var isToast: Bool = false
   
   public init(
-    toastDuration: Double = 2,
+    toastDuration: Double = 1.5,
     transtion: AnyTransition = .opacity.combined(with: .scale)
   ) {
     self.toastDuration = toastDuration
@@ -90,7 +82,6 @@ public struct LoadingModifier<C: View>: ViewModifier {
       .overlay {
         if status.isLoading {
           Color.white.opacity(0.00001)
-            .border(.blue)
           
           statusView()
             .transition(status.transition)
@@ -127,6 +118,7 @@ public struct ToastModifier<C: View>: ViewModifier {
       .overlay {
         if status.isToast {
           statusView()
+            .zIndex(999999)
             .transition(status.transition)
             .onAppear {
               DispatchQueue.main.asyncAfter(
