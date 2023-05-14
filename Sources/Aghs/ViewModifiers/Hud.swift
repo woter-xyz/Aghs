@@ -34,14 +34,14 @@ public extension Ax where T: View {
   ///
   /// - Parameter hud: A `Hud` instance to be attached to the view.
   /// - Returns: The original view with the Hud modifier applied.
-  func initHud(_ hud: Hud, defaultStyle: HudStyle = Hud.defaultStyle) -> some View {
+  func initHud(_ hud: Hud, defaultStyle: any HudStyle = Hud.defaultStyle) -> some View {
     Hud.defaultStyle = defaultStyle
     return base.modifier(HudModifier(hud: hud))
   }
   
   func hud(
     isPresented: Binding<Bool>,
-    style: HudStyle = Hud.defaultStyle,
+    style: any HudStyle = Hud.defaultStyle,
     @ViewBuilder content: @escaping () -> some View
   ) -> some View {
     base.modifier(
@@ -57,7 +57,7 @@ public extension Ax where T: View {
 
 public struct HudViewModifier<C: View>: ViewModifier {
   @Binding var isPresented: Bool
-  var style: HudStyle
+  var style: any HudStyle
   @ViewBuilder var hudView: () -> C
   @EnvironmentObject var hud: Hud
   
@@ -88,15 +88,15 @@ public struct HudViewModifier<C: View>: ViewModifier {
 ///
 public final class Hud: ObservableObject {
   @Published public var isPresented = false
-  public static var defaultStyle: HudStyle = .default
+  public static var defaultStyle: any HudStyle = .default
   
   var content: AnyView = AnyView(EmptyView())
-  var style: HudStyle = .default
+  var style: any HudStyle = .default
   
   public init() {}
   
   public func show(
-    style: HudStyle = Hud.defaultStyle,
+    style: any HudStyle = Hud.defaultStyle,
     @ViewBuilder content: () -> some View
   ) {
     self.style = style
@@ -123,7 +123,7 @@ public struct HudModifier: ViewModifier {
   public func body(content: Content) -> some View {
     content
       .overlay {
-        hud.style.background
+        AnyView(hud.style.background)
           .ignoresSafeArea()
           .onTapGesture {
             if hud.style.interactiveHide {
@@ -143,20 +143,22 @@ public struct HudModifier: ViewModifier {
 }
 
 public protocol HudStyle {
-  var background: AnyView { get }
+  
+  associatedtype Background: View
+  
+  var background: Background { get }
   var interactiveHide: Bool { get }
   var alignment: Alignment { get }
   var transition: AnyTransition { get }
 }
 
-public extension HudStyle {
-  var background: AnyView { AnyView(Color.black.opacity(0.6)) }
-  var interactiveHide: Bool { true }
-  var alignment: Alignment { .center }
-  var transition: AnyTransition { .opacity.combined(with: .scale) }
+public struct DefaultHudStyle: HudStyle {
+  
+  public var background: Color = Color.black.opacity(0.6)
+  public var interactiveHide: Bool = true
+  public var alignment: Alignment = .center
+  public var transition: AnyTransition = .opacity.combined(with: .scale)
 }
-
-public struct DefaultHudStyle: HudStyle {}
 
 extension HudStyle where Self == DefaultHudStyle {
   
@@ -165,14 +167,14 @@ extension HudStyle where Self == DefaultHudStyle {
   }
 }
 
-public struct CustomHudStyle: HudStyle {
-  public var background: AnyView
+public struct CustomHudStyle<C: View>: HudStyle {
+  public var background: C
   public var interactiveHide: Bool
   public var alignment: Alignment
   public var transition: AnyTransition
   
   public init(
-    background: AnyView,
+    background: C,
     interactiveHide: Bool,
     alignment: Alignment,
     transition: AnyTransition
@@ -184,14 +186,14 @@ public struct CustomHudStyle: HudStyle {
   }
 }
 
-extension HudStyle where Self == CustomHudStyle {
+extension HudStyle where Self == CustomHudStyle<AnyView> {
   
-  public static func custom(
-    background: AnyView,
+  public static func custom<C: View>(
+    background: C,
     interactiveHide: Bool,
     alignment: Alignment,
     transition: AnyTransition
-  ) -> CustomHudStyle {
+  ) -> CustomHudStyle<C> {
     .init(
       background: background,
       interactiveHide: interactiveHide,
