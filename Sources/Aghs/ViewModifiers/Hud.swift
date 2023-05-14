@@ -35,7 +35,7 @@ extension Ax where T: View {
   /// - Parameter hud: A `Hud` instance to be attached to the view.
   /// - Returns: The original view with the Hud modifier applied.
   public func hud(_ hud: Hud) -> some View {
-    base.modifier(Aghs.Bag.HudModifier(hud: hud))
+    base.modifier(HudModifier(hud: hud))
   }
 }
 
@@ -46,53 +46,16 @@ extension Ax where T: View {
 /// First, add a Hud instance to app:
 ///
 /// ```swift
-/// @main
-/// struct Aghs_exampleApp: App {
-///   @StateObject private var hud = Hud()
-///
-///   var body: some Scene {
-///     WindowGroup {
-///       HomeView()
-///         .ax.hud(hud)
-///     }
-///   }
-/// }
 /// ```
 ///
 /// Then you can use hud in any view of the app:
 ///
-/// ```swift
-/// struct HudView: View {
-///   @EnvironmentObject var hud: Hud
-///
-///   var body: some View {
-///     VStack {
-///       Button("Show") {
-///         hud.show(style: .default()) {
-///           DismissButton()
-///         }
-///       }
-///       .padding(50)
-///     }
-///   }
-/// }
-///
-/// struct DismissButton: View {
-///   @EnvironmentObject var hud: Hud
-///
-///   var body: some View {
-///     Button("Dismiss") {
-///       hud.hide(.spring())
-///     }
-///   }
-/// }
-/// ```
 @MainActor
 public final class Hud: ObservableObject {
   @Published public var isPresented = false
   var content: any View = EmptyView()
   var style: HudStyle = .default()
-    
+  
   public static var defaultStyle: HudStyle = .default()
   
   public init() {}
@@ -139,44 +102,41 @@ public final class Hud: ObservableObject {
   }
 }
 
-extension Aghs.Bag {
+/// A view modifier that adds a Hud to the view.
+public struct HudModifier: ViewModifier {
+  @StateObject public var hud: Hud
   
-  /// A view modifier that adds a Hud to the view.
-  public struct HudModifier: ViewModifier {
-    @StateObject public var hud: Hud
-    
-    public func body(content: Content) -> some View {
-      ZStack(alignment: hud.style.alignment) {
-        content
-        
-        if hud.isPresented {
-          Group {
-            AnyView(hud.style.background)
-              .ignoresSafeArea()
-              .transition(.opacity)
-              .onTapGesture {
-                if hud.style.interactiveHide {
-                  hud.hide()
-                }
+  public func body(content: Content) -> some View {
+    ZStack(alignment: hud.style.alignment) {
+      content
+      
+      if hud.isPresented {
+        Group {
+          AnyView(hud.style.background)
+            .ignoresSafeArea()
+            .transition(.opacity)
+            .onTapGesture {
+              if hud.style.interactiveHide {
+                hud.hide()
               }
-              .onAppear {
-                if let duration = hud.style.duration {
-                  DispatchQueue.main.asyncAfter(
-                    deadline: .now() + duration) {
-                      hud.hide()
-                    }
-                }
+            }
+            .onAppear {
+              if let duration = hud.style.duration {
+                DispatchQueue.main.asyncAfter(
+                  deadline: .now() + duration) {
+                    hud.hide()
+                  }
               }
-            
-            AnyView(hud.content)
-              .transition(hud.style.transiton)
-          }
-          .zIndex(.infinity)
+            }
+          
+          AnyView(hud.content)
+            .transition(hud.style.transiton)
         }
+        .zIndex(.infinity)
       }
-      .environmentObject(hud)
-      .ignoresSafeArea()
     }
+    .environmentObject(hud)
+    .ignoresSafeArea()
   }
 }
 
@@ -188,7 +148,7 @@ public protocol HudStyle {
   var duration: Double? { get set }
 }
 
-extension HudStyle where Self == Aghs.Bag.DefaultHudStyle {
+extension HudStyle where Self == DefaultHudStyle {
   
   public static func `default`(
     background: any View = Color.black.opacity(0.6),
@@ -196,7 +156,7 @@ extension HudStyle where Self == Aghs.Bag.DefaultHudStyle {
     alignment: Alignment = .center,
     transiton: AnyTransition = .opacity.combined(with: .scale),
     duration: Double? = nil
-  ) -> Aghs.Bag.DefaultHudStyle {
+  ) -> DefaultHudStyle {
     .init(
       background: background,
       interactiveHide: interactiveHide,
@@ -207,13 +167,10 @@ extension HudStyle where Self == Aghs.Bag.DefaultHudStyle {
   }
 }
 
-extension Aghs.Bag {
-  
-  public struct DefaultHudStyle: HudStyle {
-    public var background: any View
-    public var interactiveHide: Bool
-    public var alignment: Alignment
-    public var transiton: AnyTransition
-    public var duration: Double?
-  }
+public struct DefaultHudStyle: HudStyle {
+  public var background: any View
+  public var interactiveHide: Bool
+  public var alignment: Alignment
+  public var transiton: AnyTransition
+  public var duration: Double?
 }

@@ -29,7 +29,7 @@ import Foundation
 import SwiftUI
 
 public extension Ax where T: View {
-
+  
   func viewStatus<E: View, T: View, L: View>(
     _ status: ViewStatusManager,
     toastView: @escaping () -> T = { EmptyView() },

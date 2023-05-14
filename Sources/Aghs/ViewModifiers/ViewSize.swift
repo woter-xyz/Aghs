@@ -35,39 +35,36 @@ extension Ax where T: View {
   /// - Parameter callback: A closure that takes the size of the view as a parameter.
   /// - Returns: The original view with a background modifier that captures the view's size.
   public func getSize(_ callback: @escaping (CGSize) -> Void) -> some View {
-    base.modifier(Aghs.Bag.SizeModifer(callback: callback))
+    base.modifier(SizeModifer(callback: callback))
   }
 }
 
-extension Aghs.Bag {
+/// A view modifier that captures the size of the view and calls a callback function with the size.
+public struct SizeModifer: ViewModifier {
+  public let callback: (CGSize) -> Void
   
-  /// A view modifier that captures the size of the view and calls a callback function with the size.
-  public struct SizeModifer: ViewModifier {
-    public let callback: (CGSize) -> Void
-    
-    public func body(content: Content) -> some View {
-      content
-        .background(
-          GeometryReader { geometryProxy in
-            Color.clear
-              .anchorPreference(key: BoundsPreferenceKey.self, value: .bounds) {
-                geometryProxy[$0]
-              }
-              .onPreferenceChange(BoundsPreferenceKey.self) {
-                callback($0.size)
-              }
-          }
-        )
-    }
+  public func body(content: Content) -> some View {
+    content
+      .background(
+        GeometryReader { geometryProxy in
+          Color.clear
+            .anchorPreference(key: BoundsPreferenceKey.self, value: .bounds) {
+              geometryProxy[$0]
+            }
+            .onPreferenceChange(BoundsPreferenceKey.self) {
+              callback($0.size)
+            }
+        }
+      )
   }
+}
+
+/// A preference key for storing the view's bounds.
+public struct BoundsPreferenceKey: PreferenceKey {
   
-  /// A preference key for storing the view's bounds.
-  public struct BoundsPreferenceKey: PreferenceKey {
-    
-    public static var defaultValue: CGRect = .zero
-    
-    public static func reduce(value: inout CGRect, nextValue: () -> CGRect) {
-      value = nextValue()
-    }
+  public static var defaultValue: CGRect = .zero
+  
+  public static func reduce(value: inout CGRect, nextValue: () -> CGRect) {
+    value = nextValue()
   }
 }
