@@ -53,6 +53,7 @@ public class ViewStatusManager: ObservableObject {
   @Published public var isLoading: Bool = false
   @Published public var isEmpty: Bool = false
   @Published public var isToast: Bool = false
+  @Published public var toast: String = ""
   
   public init(
     toastDuration: Double = 1.5,
