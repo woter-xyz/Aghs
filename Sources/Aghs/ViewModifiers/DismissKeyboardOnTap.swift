@@ -49,9 +49,12 @@ public struct DismissKeyboardOnTap: ViewModifier {
   
   public func body(content: Content) -> some View {
     content
-      .contentShape(Rectangle())
-      .onTapGesture {
-        Aghs.dismissKeyboard()
-      }
+      .background(
+        Color.clear
+          .contentShape(Rectangle())
+          .onTapGesture {
+            Aghs.dismissKeyboard()
+          }
+      )
   }
 }
