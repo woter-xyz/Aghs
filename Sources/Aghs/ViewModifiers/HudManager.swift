@@ -30,35 +30,101 @@ import Combine
 
 public extension Ax where T: View {
   
-  func hudManager(_ hudManager: HudManager) -> some View {
-    return base.modifier(HudManagerModifier(hudManager: hudManager))
+  func hudManager(
+    backgroundColor: Color = .black.opacity(0.5),
+    interactiveHide: Bool = false,
+    animation: Animation = .linear(duration: 0.1)
+  ) -> some View {
+    base.modifier(
+      HudManagerModifier(hudManager: .init(
+        backgroundColor: backgroundColor,
+        interactiveHide: interactiveHide,
+        animation: animation
+      ))
+    )
   }
 }
 
 public final class HudManager: ObservableObject {
   
-  @Published public var isPresented = false
+  @Published public private(set) var isPresented = false
   
-  public var overlay: AnyView = AnyView(Color.black.opacity(0.5))
+  @Published var contents: [HudContent<AnyHashable, AnyView>] = []
   
-  var contents: [AnyView] = []
-  var bag = Set<AnyCancellable>()
+  private var defaultBackgroundColor: Color
+  private var defaultInteractiveHide: Bool
+  private var defaultAnimation: Animation
+  private var bag = Set<AnyCancellable>()
   
-  public init() {
-    $isPresented
-      .sink { [weak self] output in
-        guard let self else { return }
-        if !output {
-          contents.removeAll()
+  public init(
+    backgroundColor: Color,
+    interactiveHide: Bool,
+    animation: Animation
+  ) {
+    self.defaultBackgroundColor = backgroundColor
+    self.defaultInteractiveHide = interactiveHide
+    self.defaultAnimation = animation
+    
+    $contents
+      .map { !$0.isEmpty }
+      .removeDuplicates()
+      .sink { [weak self] isNotEmpty in
+        guard let self = self else { return }
+        withAnimation(defaultAnimation) {
+          self.isPresented = isNotEmpty
         }
       }
       .store(in: &bag)
   }
   
-  public func show<C: View>(_ content: C) {
-    contents.append(AnyView(content))
-    isPresented = true
+  public func show<ID: Hashable, C: View>(
+    id: ID = UUID(),
+    animation: Animation = .default,
+    transition: AnyTransition = .opacity,
+    backgroundColor: Color? = nil,
+    interactiveHide: Bool? = nil,
+    content: () -> C
+  ) {
+    contents.append(
+      HudContent(
+        id: id,
+        content: AnyView(content().transition(transition)),
+        animation: animation,
+        transition: transition,
+        interactiveHide: interactiveHide,
+        backgroundColor: backgroundColor
+      )
+    )
   }
+  
+  public func hide<ID: Hashable>(id: ID) {
+    contents.removeAll(where: { $0.id == AnyHashable(id) })
+  }
+  
+  public func hideAll() {
+    contents.removeAll()
+  }
+  
+  var currentBackgroundColor: Color {
+    contents.last?.backgroundColor ?? defaultBackgroundColor
+  }
+  
+  var currentInteractiveHide: Bool {
+    contents.last?.interactiveHide ?? defaultInteractiveHide
+  }
+  
+  var currentAnimation: Animation {
+    contents.last?.animation ?? defaultAnimation
+  }
+}
+
+public struct HudContent<ID: Hashable, C: View> {
+  let id: ID
+  let content: C
+  let animation: Animation
+  let transition: AnyTransition
+  let interactiveHide: Bool?
+  let backgroundColor: Color?
 }
 
 public struct HudManagerModifier: ViewModifier {
@@ -67,20 +133,21 @@ public struct HudManagerModifier: ViewModifier {
   public func body(content: Content) -> some View {
     content
       .overlay {
-        hudManager.overlay
+        hudManager.currentBackgroundColor
           .ignoresSafeArea()
           .opacity(hudManager.isPresented ? 1 : 0)
           .onTapGesture {
-            withAnimation(.linear(duration: 0.1)) {
-              hudManager.isPresented = false
+            if hudManager.currentInteractiveHide {
+              hudManager.hideAll()
             }
           }
           .overlay {
-            ForEach(0..<hudManager.contents.count, id: \.self) {
-              hudManager.contents[$0]
+            ForEach(hudManager.contents, id: \.id) {
+              $0.content
             }
           }
       }
+      .animation(hudManager.currentAnimation, value: hudManager.contents.count)
       .environmentObject(hudManager)
   }
 }
