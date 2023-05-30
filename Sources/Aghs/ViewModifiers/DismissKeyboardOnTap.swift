@@ -39,21 +39,22 @@ extension Ax where T: View {
   ///
   /// - Returns: A view with a tap gesture that dismisses the keyboard.
   public func dismissKeyboardOnTap() -> some View {
-    base.modifier(Aghs.Bag.DismissKeyboardOnTap())
+    base.modifier(DismissKeyboardOnTap())
   }
 }
 
-extension Aghs.Bag {
+
+/// A view modifier that dismisses the keyboard when the modified view is tapped.
+public struct DismissKeyboardOnTap: ViewModifier {
   
-  /// A view modifier that dismisses the keyboard when the modified view is tapped.
-  public struct DismissKeyboardOnTap: ViewModifier {
-    
-    public func body(content: Content) -> some View {
-      content
-        .contentShape(Rectangle())
-        .onTapGesture {
-          Aghs.dismissKeyboard()
-        }
-    }
+  public func body(content: Content) -> some View {
+    content
+      .background(
+        Color.clear
+          .contentShape(Rectangle())
+          .onTapGesture {
+            Aghs.dismissKeyboard()
+          }
+      )
   }
 }

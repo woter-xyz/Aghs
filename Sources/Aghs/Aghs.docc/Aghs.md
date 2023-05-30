@@ -12,7 +12,7 @@ Aghs is composed of three parts:
 
 - [Components](<doc:Components>): A selection of commonly used UI components.
 
-  UI components can be used directly, although their associated view modifiers might need to be applied using the `.ax` style. For instance, ``Hud`` can be used directly, but the ``Aghs/Ax/hud(_:)`` should be invoked using the `.ax` style.
+  UI components can be used directly, although their associated view modifiers might need to be applied using the `.ax` style. For instance, ``Hud`` can be used directly, but the ``Aghs/Ax/initHud(backgroundColor:interactiveHide:animation:)`` should be invoked using the `.ax` style.
 
 - [Utils](<doc:Utils>): A collection of useful utilities.
 

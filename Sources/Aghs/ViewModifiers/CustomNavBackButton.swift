@@ -40,38 +40,36 @@ extension Ax where T: View {
   /// - Parameter label: A closure that returns the custom button's view.
   /// - Returns: The original view with the custom navigation back button.
   public func customNavBackButton<C: View>(label: @escaping () -> C) -> some View {
-    base.modifier(Aghs.Bag.CustomNavBackButton(label: label))
+    base.modifier(CustomNavBackButton(label: label))
   }
 }
 
-extension Aghs.Bag {
+
+/// A view modifier that adds a custom navigation back button to the view.
+public struct CustomNavBackButton<C: View>: ViewModifier {
+  @ViewBuilder public var label: () -> C
+  @Environment(\.dismiss) private var dismiss
   
-  /// A view modifier that adds a custom navigation back button to the view.
-  public struct CustomNavBackButton<C: View>: ViewModifier {
-    @ViewBuilder public var label: () -> C
-    @Environment(\.dismiss) private var dismiss
-    
-    public func body(content: Content) -> some View {
-      content
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-          ToolbarItem(placement: placement) {
-            Button {
-              dismiss()
-            } label: {
-              label()
-            }
+  public func body(content: Content) -> some View {
+    content
+      .navigationBarBackButtonHidden(true)
+      .toolbar {
+        ToolbarItem(placement: placement) {
+          Button {
+            dismiss()
+          } label: {
+            label()
           }
         }
-    }
-    
-    private var placement: ToolbarItemPlacement {
-      #if os(iOS)
-      .navigationBarLeading
-      #elseif os(macOS)
-      .navigation
-      #endif
-    }
+      }
+  }
+  
+  private var placement: ToolbarItemPlacement {
+#if os(iOS)
+    .navigationBarLeading
+#elseif os(macOS)
+    .navigation
+#endif
   }
 }
 

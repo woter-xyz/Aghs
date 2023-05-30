@@ -31,12 +31,6 @@ import SwiftUI
 /// Source of **Aghs**.
 public struct Aghs {}
 
-extension Aghs {
-  
-  /// A storage bag for package itself that makes using `Aghs` enjoyable.
-  public struct Bag {}
-}
-
 
 /// Source of **ax**.
 public struct Ax<T> {
