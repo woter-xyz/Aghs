@@ -1,8 +1,8 @@
 //
-//  File.swift
+//  NetworkStatusMonitor.swift
 //  
 //
-//  Created by zzzwco on 2023/5/4.
+//  Created by zzzwco on 2023/5/30.
 //
 //  Copyright (c) 2021 zzzwco <zzzwco@outlook.com>
 //
@@ -60,3 +60,4 @@ public final class NetworkStatusMonitor: ObservableObject {
     return .other
   }
 }
+
