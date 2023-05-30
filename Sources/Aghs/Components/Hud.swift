@@ -47,12 +47,12 @@ public extension Ax where T: View {
   ///
   /// - Parameters:
   ///   - backgroundColor: The background color of the Hud. Default value is black with opacity of 0.5.
-  ///   - interactiveHide: A Boolean value that determines whether the Hud should be hidden when a tap gesture is detected. Default value is `true`.
+  ///   - interactiveHide: A Boolean value that determines whether the Hud should be hidden when a tap gesture is detected. Default value is `false`.
   ///   - animation: The animation to be used for showing and hiding the Hud. Default value is linear animation with a duration of 0.1 seconds.
   /// - Returns: A `View` with the specified Hud configurations.
   func initHud(
     backgroundColor: Color = .black.opacity(0.5),
-    interactiveHide: Bool = true,
+    interactiveHide: Bool = false,
     animation: Animation = .linear(duration: 0.1)
   ) -> some View {
     base.modifier(
