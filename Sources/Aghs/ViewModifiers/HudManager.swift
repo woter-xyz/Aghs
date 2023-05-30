@@ -56,6 +56,8 @@ public final class HudManager: ObservableObject {
   private var defaultAnimation: Animation
   private var bag = Set<AnyCancellable>()
   
+  var currentAnimation: Animation
+  
   public init(
     backgroundColor: Color,
     interactiveHide: Bool,
@@ -64,6 +66,7 @@ public final class HudManager: ObservableObject {
     self.defaultBackgroundColor = backgroundColor
     self.defaultInteractiveHide = interactiveHide
     self.defaultAnimation = animation
+    self.currentAnimation = animation
     
     $contents
       .map { !$0.isEmpty }
@@ -85,6 +88,7 @@ public final class HudManager: ObservableObject {
     interactiveHide: Bool? = nil,
     content: () -> C
   ) {
+    currentAnimation = animation
     contents.append(
       HudContent(
         id: id,
@@ -98,10 +102,14 @@ public final class HudManager: ObservableObject {
   }
   
   public func hide<ID: Hashable>(id: ID) {
+    currentAnimation = contents.last?.animation ?? defaultAnimation
     contents.removeAll(where: { $0.id == AnyHashable(id) })
   }
   
   public func hideAll() {
+    let currentAnimation = contents.count == 1
+    ? contents.last!.animation
+    : defaultAnimation
     contents.removeAll()
   }
   
@@ -111,10 +119,6 @@ public final class HudManager: ObservableObject {
   
   var currentInteractiveHide: Bool {
     contents.last?.interactiveHide ?? defaultInteractiveHide
-  }
-  
-  var currentAnimation: Animation {
-    contents.last?.animation ?? defaultAnimation
   }
 }
 
