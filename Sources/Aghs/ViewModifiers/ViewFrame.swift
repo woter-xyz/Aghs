@@ -1,5 +1,5 @@
 //
-//  ViewSize.swift
+//  ViewFrame.swift
 //  
 //
 //  Created by zzzwco on 2022/11/16.
@@ -30,38 +30,33 @@ import SwiftUI
 
 extension Ax where T: View {
   
-  /// Retrieve the size of the view and call a callback function with the size.
+  /// Retrieve the frame of the view and call a callback function with the frame.
   ///
-  /// - Parameter callback: A closure that takes the size of the view as a parameter.
-  /// - Returns: The original view with a background modifier that captures the view's size.
-  public func getSize(_ callback: @escaping (CGSize) -> Void) -> some View {
-    base.modifier(SizeModifer(callback: callback))
+  /// - Parameter callback: A closure that takes the frame of the view as a parameter.
+  /// - Returns: The original view with a background modifier that captures the view's frame.
+  public func getFrame(_ callback: @escaping (CGRect) -> Void) -> some View {
+    base.modifier(FrameModifier(callback: callback))
   }
 }
 
-/// A view modifier that captures the size of the view and calls a callback function with the size.
-public struct SizeModifer: ViewModifier {
-  public let callback: (CGSize) -> Void
+/// A view modifier that captures the frame of the view and calls a callback function with the frame.
+public struct FrameModifier: ViewModifier {
+  public let callback: (CGRect) -> Void
   
   public func body(content: Content) -> some View {
     content
       .background(
         GeometryReader { geometryProxy in
           Color.clear
-            .anchorPreference(key: BoundsPreferenceKey.self, value: .bounds) {
-              geometryProxy[$0]
-            }
-            .onPreferenceChange(BoundsPreferenceKey.self) {
-              callback($0.size)
-            }
+            .preference(key: FramePreferenceKey.self, value: geometryProxy.frame(in: .global))
         }
       )
+      .onPreferenceChange(FramePreferenceKey.self, perform: callback)
   }
 }
 
-/// A preference key for storing the view's bounds.
-public struct BoundsPreferenceKey: PreferenceKey {
-  
+/// A preference key for storing the view's frame.
+public struct FramePreferenceKey: PreferenceKey {
   public static var defaultValue: CGRect = .zero
   
   public static func reduce(value: inout CGRect, nextValue: () -> CGRect) {
