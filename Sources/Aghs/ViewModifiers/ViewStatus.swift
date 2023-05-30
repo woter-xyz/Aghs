@@ -30,6 +30,14 @@ import SwiftUI
 
 public extension Ax where T: View {
   
+  /// Applies several view status modifiers to a view.
+  ///
+  /// - Parameters:
+  ///   - status: The `ViewStatusManager` instance to track view states.
+  ///   - toastView: The view to show when toast status is enabled.
+  ///   - loadingView: The view to show when loading status is enabled.
+  ///   - emptyView: The view to show when empty status is enabled.
+  /// - Returns: A view with applied status modifiers.
   func viewStatus<E: View, T: View, L: View>(
     _ status: ViewStatusManager,
     toastView: @escaping () -> T = { EmptyView() },
@@ -46,7 +54,10 @@ public extension Ax where T: View {
 }
 
 public class ViewStatusManager: ObservableObject {
+  /// Duration for showing toast messages.
   public var toastDuration: Double
+  
+  /// Transition to use when a status view appears or disappears.
   public var transition: AnyTransition
   
   @Published public var isEnabled: Bool = true
@@ -55,6 +66,11 @@ public class ViewStatusManager: ObservableObject {
   @Published public var isToast: Bool = false
   @Published public var toast: String = ""
   
+  /// Initialize a new instance of `ViewStatusManager`.
+  ///
+  /// - Parameters:
+  ///   - toastDuration: Duration for showing toast messages.
+  ///   - transtion: Transition to use when a status view appears or disappears.
   public init(
     toastDuration: Double = 1.5,
     transtion: AnyTransition = .opacity.combined(with: .scale)
