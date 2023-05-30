@@ -30,6 +30,12 @@ import Combine
 
 public extension Ax where T: View {
   
+  /// Initialize a HUD with the specified configurations.
+  /// - Parameters:
+  ///   - backgroundColor: The background color of the HUD. Default value is black with opacity of 0.5.
+  ///   - interactiveHide: A Boolean value that determines whether the HUD should be hidden when a tap gesture is detected. Default value is `false`.
+  ///   - animation: The animation to be used for showing and hiding the HUD. Default value is linear animation with a duration of 0.1 seconds.
+  /// - Returns: A `View` with the specified HUD configurations.
   func initHud(
     backgroundColor: Color = .black.opacity(0.5),
     interactiveHide: Bool = false,
@@ -45,17 +51,29 @@ public extension Ax where T: View {
   }
 }
 
+/// An `ObservableObject` for managing a Heads-Up Display (HUD).
 public final class Hud: ObservableObject {
   
   @Published private(set) var isPresented = false
   @Published var contents: [HudContent<AnyHashable, AnyView>] = []
   var currentAnimation: Animation
+  var currentBackgroundColor: Color {
+    contents.last?.backgroundColor ?? defaultBackgroundColor
+  }
+  var currentInteractiveHide: Bool {
+    contents.last?.interactiveHide ?? defaultInteractiveHide
+  }
   
   private var defaultBackgroundColor: Color
   private var defaultInteractiveHide: Bool
   private var defaultAnimation: Animation
   private var bag = Set<AnyCancellable>()
   
+  /// Initialize a new `Hud` with the specified configurations.
+  /// - Parameters:
+  ///   - backgroundColor: The background color of the HUD.
+  ///   - interactiveHide: A Boolean value that determines whether the HUD should be hidden when a tap gesture is detected.
+  ///   - animation: The animation to be used for showing and hiding the HUD.
   public init(
     backgroundColor: Color,
     interactiveHide: Bool,
@@ -78,6 +96,14 @@ public final class Hud: ObservableObject {
       .store(in: &bag)
   }
   
+  /// Show a new HUD with the specified configurations.
+  /// - Parameters:
+  ///   - id: A unique identifier for the HUD content.
+  ///   - animation: The animation to be used for showing this HUD content.
+  ///   - transition: The transition to be used for this HUD content.
+  ///   - backgroundColor: The background color for this HUD content.
+  ///   - interactiveHide: A Boolean value that determines whether this HUD content should be hidden when a tap gesture is detected.
+  ///   - content: The view to be displayed in this HUD content.
   public func show<ID: Hashable, C: View>(
     id: ID = UUID(),
     animation: Animation = .default,
@@ -99,27 +125,24 @@ public final class Hud: ObservableObject {
     )
   }
   
+  /// Hide the HUD with the specified identifier.
+  /// - Parameters:
+  ///   - id: The unique identifier of the HUD content to be hidden.
   public func hide<ID: Hashable>(id: ID) {
     currentAnimation = contents.last?.animation ?? defaultAnimation
     contents.removeAll(where: { $0.id == AnyHashable(id) })
   }
   
+  /// Hide all the contents in the HUD.
   public func hideAll() {
     currentAnimation = contents.count == 1
     ? contents.last!.animation
     : defaultAnimation
     contents.removeAll()
   }
-  
-  var currentBackgroundColor: Color {
-    contents.last?.backgroundColor ?? defaultBackgroundColor
-  }
-  
-  var currentInteractiveHide: Bool {
-    contents.last?.interactiveHide ?? defaultInteractiveHide
-  }
 }
 
+/// The content to be displayed in a Heads-Up Display (HUD).
 public struct HudContent<ID: Hashable, C: View> {
   let id: ID
   let content: C
