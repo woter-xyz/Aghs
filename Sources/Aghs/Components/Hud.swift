@@ -2,7 +2,7 @@
 //  Hud.swift
 //  
 //
-//  Created by zzzwco on 2022/11/16.
+//  Created by zzzwco on 2023/5/25.
 //
 //  Copyright (c) 2021 zzzwco <zzzwco@outlook.com>
 //
@@ -25,199 +25,154 @@
 //  SOFTWARE.
 //
 
-import Foundation
 import SwiftUI
+import Combine
 
-extension Ax where T: View {
+public extension Ax where T: View {
   
-  /// Attach a Hud to the view.
-  ///
-  /// - Parameter hud: A `Hud` instance to be attached to the view.
-  /// - Returns: The original view with the Hud modifier applied.
-  public func hud(_ hud: Hud) -> some View {
-    base.modifier(Aghs.Bag.HudModifier(hud: hud))
-  }
-}
-
-/// A Hud that can be displayed on a view.
-///
-/// Best practice example:
-///
-/// First, add a Hud instance to app:
-///
-/// ```swift
-/// @main
-/// struct Aghs_exampleApp: App {
-///   @StateObject private var hud = Hud()
-///
-///   init() {
-///     Hud.defaultStyle = .default(background: Color.yellow.opacity(0.35))
-///   }
-///
-///   var body: some Scene {
-///     WindowGroup {
-///       HomeView()
-///         .ax.hud(hud)
-///     }
-///   }
-/// }
-/// ```
-///
-/// Then you can use hud in any view of the app:
-///
-/// ```swift
-/// struct HudView: View {
-///   @EnvironmentObject var hud: Hud
-///
-///   var body: some View {
-///     VStack {
-///       Button("Show") {
-///         hud.show {
-///           DismissButton()
-///         }
-///       }
-///       .padding(50)
-///     }
-///   }
-/// }
-///
-/// struct DismissButton: View {
-///   @EnvironmentObject var hud: Hud
-///
-///   var body: some View {
-///     Button("Dismiss") {
-///       hud.hide(.spring())
-///     }
-///   }
-/// }
-/// ```
-@MainActor
-public final class Hud: ObservableObject {
-  @Published public var isPresented = false
-  var content: any View = EmptyView()
-  var style: HudStyle = .default()
-    
-  public static var defaultStyle: HudStyle = .default()
-  
-  public init() {}
-  
-  /// Display the Hud with the specified style, animation, and content.
-  ///
+  /// Initialize a HUD with the specified configurations.
   /// - Parameters:
-  ///   - style: A `HudStyle` instance specifying the appearance and behavior of the Hud.
-  ///   - animation: The animation to use when showing the Hud.
-  ///   - content: A closure that returns the content of the Hud.
-  public func show(
-    style: HudStyle,
-    animation: Animation? = .spring(),
-    content: () -> some View
-  ) {
-    self.style = style
-    self.content = content()
-    withAnimation(animation) {
-      isPresented = true
-    }
-  }
-  
-  /// Display the Hud using the global default style, a specified animation, and content.
-  ///
-  /// This method uses the global `defaultStyle` as the Hud style.
-  ///
-  /// - Parameters:
-  ///   - animation: The animation to use when showing the Hud. Defaults to `.spring()`.
-  ///   - content: A closure that returns the content of the Hud.
-  public func show(
-    animation: Animation? = .spring(),
-    content: () -> some View
-  ) {
-    show(style: Self.defaultStyle, animation: animation, content: content)
-  }
-  
-  /// Hide the Hud with the specified animation.
-  ///
-  /// - Parameter animation: The animation to use when hiding the Hud.
-  public func hide(_ animation: Animation? = .spring()) {
-    withAnimation(animation) {
-      isPresented = false
-    }
-  }
-}
-
-extension Aghs.Bag {
-  
-  /// A view modifier that adds a Hud to the view.
-  public struct HudModifier: ViewModifier {
-    @StateObject public var hud: Hud
-    
-    public func body(content: Content) -> some View {
-      ZStack(alignment: hud.style.alignment) {
-        content
-        
-        if hud.isPresented {
-          Group {
-            AnyView(hud.style.background)
-              .ignoresSafeArea()
-              .transition(.opacity)
-              .onTapGesture {
-                if hud.style.interactiveHide {
-                  hud.hide()
-                }
-              }
-              .onAppear {
-                if let duration = hud.style.duration {
-                  DispatchQueue.main.asyncAfter(
-                    deadline: .now() + duration) {
-                      hud.hide()
-                    }
-                }
-              }
-            
-            AnyView(hud.content)
-              .transition(hud.style.transiton)
-          }
-          .zIndex(.infinity)
-        }
-      }
-      .environmentObject(hud)
-      .ignoresSafeArea()
-    }
-  }
-}
-
-public protocol HudStyle {
-  var background: any View { get set }
-  var interactiveHide: Bool { get set }
-  var alignment: Alignment { get set }
-  var transiton: AnyTransition { get set }
-  var duration: Double? { get set }
-}
-
-extension HudStyle where Self == Aghs.Bag.DefaultHudStyle {
-  
-  public static func `default`(
-    background: any View = Color.black.opacity(0.6),
-    interactiveHide: Bool = true,
-    alignment: Alignment = .center,
-    transiton: AnyTransition = .opacity.combined(with: .scale),
-    duration: Double? = nil
-  ) -> Aghs.Bag.DefaultHudStyle {
-    .init(
-      background: background,
-      interactiveHide: interactiveHide,
-      alignment: alignment,
-      transiton: transiton,
-      duration: duration
+  ///   - backgroundColor: The background color of the HUD. Default value is black with opacity of 0.5.
+  ///   - interactiveHide: A Boolean value that determines whether the HUD should be hidden when a tap gesture is detected. Default value is `false`.
+  ///   - animation: The animation to be used for showing and hiding the HUD. Default value is linear animation with a duration of 0.1 seconds.
+  /// - Returns: A `View` with the specified HUD configurations.
+  func initHud(
+    backgroundColor: Color = .black.opacity(0.5),
+    interactiveHide: Bool = false,
+    animation: Animation = .linear(duration: 0.1)
+  ) -> some View {
+    base.modifier(
+      HudModifier(hud: .init(
+        backgroundColor: backgroundColor,
+        interactiveHide: interactiveHide,
+        animation: animation
+      ))
     )
   }
 }
 
-extension Aghs.Bag {
+/// An `ObservableObject` for managing a Heads-Up Display (HUD).
+public final class Hud: ObservableObject {
   
-  public struct DefaultHudStyle: HudStyle {
-    public var background: any View
-    public var interactiveHide: Bool
-    public var alignment: Alignment
-    public var transiton: AnyTransition
-    public var duration: Double?
+  @Published private(set) var isPresented = false
+  @Published var contents: [HudContent<AnyHashable, AnyView>] = []
+  var currentAnimation: Animation
+  var currentBackgroundColor: Color {
+    contents.last?.backgroundColor ?? defaultBackgroundColor
+  }
+  var currentInteractiveHide: Bool {
+    contents.last?.interactiveHide ?? defaultInteractiveHide
+  }
+  
+  private var defaultBackgroundColor: Color
+  private var defaultInteractiveHide: Bool
+  private var defaultAnimation: Animation
+  private var bag = Set<AnyCancellable>()
+  
+  /// Initialize a new `Hud` with the specified configurations.
+  /// - Parameters:
+  ///   - backgroundColor: The background color of the HUD.
+  ///   - interactiveHide: A Boolean value that determines whether the HUD should be hidden when a tap gesture is detected.
+  ///   - animation: The animation to be used for showing and hiding the HUD.
+  public init(
+    backgroundColor: Color,
+    interactiveHide: Bool,
+    animation: Animation
+  ) {
+    self.defaultBackgroundColor = backgroundColor
+    self.defaultInteractiveHide = interactiveHide
+    self.defaultAnimation = animation
+    self.currentAnimation = animation
+    
+    $contents
+      .map { !$0.isEmpty }
+      .removeDuplicates()
+      .sink { [weak self] isNotEmpty in
+        guard let self = self else { return }
+        withAnimation(defaultAnimation) {
+          self.isPresented = isNotEmpty
+        }
+      }
+      .store(in: &bag)
+  }
+  
+  /// Show a new HUD with the specified configurations.
+  /// - Parameters:
+  ///   - id: A unique identifier for the HUD content.
+  ///   - animation: The animation to be used for showing this HUD content.
+  ///   - transition: The transition to be used for this HUD content.
+  ///   - backgroundColor: The background color for this HUD content.
+  ///   - interactiveHide: A Boolean value that determines whether this HUD content should be hidden when a tap gesture is detected.
+  ///   - content: The view to be displayed in this HUD content.
+  public func show<ID: Hashable, C: View>(
+    id: ID = UUID(),
+    animation: Animation = .default,
+    transition: AnyTransition = .opacity,
+    backgroundColor: Color? = nil,
+    interactiveHide: Bool? = nil,
+    content: () -> C
+  ) {
+    currentAnimation = animation
+    contents.append(
+      HudContent(
+        id: id,
+        content: AnyView(content().transition(transition)),
+        animation: animation,
+        transition: transition,
+        interactiveHide: interactiveHide,
+        backgroundColor: backgroundColor
+      )
+    )
+  }
+  
+  /// Hide the HUD with the specified identifier.
+  /// - Parameters:
+  ///   - id: The unique identifier of the HUD content to be hidden.
+  public func hide<ID: Hashable>(id: ID) {
+    currentAnimation = contents.last?.animation ?? defaultAnimation
+    contents.removeAll(where: { $0.id == AnyHashable(id) })
+  }
+  
+  /// Hide all the contents in the HUD.
+  public func hideAll() {
+    currentAnimation = contents.count == 1
+    ? contents.last!.animation
+    : defaultAnimation
+    contents.removeAll()
+  }
+}
+
+/// The content to be displayed in a Heads-Up Display (HUD).
+public struct HudContent<ID: Hashable, C: View> {
+  let id: ID
+  let content: C
+  let animation: Animation
+  let transition: AnyTransition
+  let interactiveHide: Bool?
+  let backgroundColor: Color?
+}
+
+public struct HudModifier: ViewModifier {
+  @StateObject public var hud: Hud
+  
+  public func body(content: Content) -> some View {
+    content
+      .overlay {
+        hud.currentBackgroundColor
+          .ignoresSafeArea()
+          .opacity(hud.isPresented ? 1 : 0)
+          .onTapGesture {
+            if hud.currentInteractiveHide {
+              hud.hideAll()
+            }
+          }
+          .overlay {
+            ForEach(hud.contents, id: \.id) {
+              $0.content
+            }
+          }
+      }
+      .animation(hud.currentAnimation, value: hud.contents.count)
+      .environmentObject(hud)
   }
 }

@@ -33,32 +33,30 @@ extension Aghs {
   ///
   /// - Parameters:
   ///   - message: The message to log. Supports variadic input.
-  ///   - type: A `LogType` to classify the log message (default is .info).
+  ///   - type: A ``PrintType`` to classify the log message (default is .info).
   ///   - file: The name of the file where the log function is called (default is the current file name).
   ///   - method: The name of the method where the log function is called (default is the current method name).
   ///   - line: The line number where the log function is called (default is the current line number).
   public static func print<T>(
     _ message: T...,
-    type: Aghs.Bag.LogType = .info,
+    type: PrintType = .info,
     file: String = #file,
     method: String = #function,
     line: Int = #line
   ) {
-    #if DEBUG
+#if DEBUG 
     let message = message.map { "\($0)\n" }.joined()
     let content = "\(Date()), \((file as NSString).lastPathComponent)[\(line)], \(method): \n\(message)\n"
     Swift.print("\(type.rawValue) \(content)")
-    #endif
+#endif
   }
 }
 
-extension Aghs.Bag {
-  
-  /// Enum that represents log message types with corresponding symbols and labels.
-  public enum LogType: String {
-    case info = "🍺 [INFO]:"
-    case warning = "⚠️ [WARNING]:"
-    case error = "❌ [ERROR]:"
-    case success = "✅ [SUCCESS]:"
-  }
+
+/// Enum that represents log message types with corresponding symbols and labels.
+public enum PrintType: String {
+  case info = "🍺 [INFO]:"
+  case warning = "⚠️ [WARNING]:"
+  case error = "❌ [ERROR]:"
+  case success = "✅ [SUCCESS]:"
 }
