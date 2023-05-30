@@ -108,6 +108,8 @@ public final class Hud: ObservableObject {
     id: ID = UUID(),
     animation: Animation = .default,
     transition: AnyTransition = .opacity,
+    alignment: Alignment = .center,
+    ignoresSafeAreaEdges: Edge.Set = [],
     backgroundColor: Color? = nil,
     interactiveHide: Bool? = nil,
     content: () -> C
@@ -119,6 +121,8 @@ public final class Hud: ObservableObject {
         content: AnyView(content().transition(transition)),
         animation: animation,
         transition: transition,
+        alignment: alignment,
+        ignoresSafeAreaEdges: ignoresSafeAreaEdges,
         interactiveHide: interactiveHide,
         backgroundColor: backgroundColor
       )
@@ -148,6 +152,8 @@ public struct HudContent<ID: Hashable, C: View> {
   let content: C
   let animation: Animation
   let transition: AnyTransition
+  let alignment: Alignment
+  let ignoresSafeAreaEdges: Edge.Set
   let interactiveHide: Bool?
   let backgroundColor: Color?
 }
@@ -169,6 +175,8 @@ public struct HudModifier: ViewModifier {
           .overlay {
             ForEach(hud.contents, id: \.id) {
               $0.content
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: $0.alignment)
+                .ignoresSafeArea(.all, edges: $0.ignoresSafeAreaEdges)
             }
           }
       }
