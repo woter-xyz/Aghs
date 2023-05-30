@@ -1,5 +1,5 @@
 //
-//  HudManager.swift
+//  Hud.swift
 //  
 //
 //  Created by zzzwco on 2023/5/25.
@@ -30,13 +30,13 @@ import Combine
 
 public extension Ax where T: View {
   
-  func hudManager(
+  func initHud(
     backgroundColor: Color = .black.opacity(0.5),
     interactiveHide: Bool = false,
     animation: Animation = .linear(duration: 0.1)
   ) -> some View {
     base.modifier(
-      HudManagerModifier(hudManager: .init(
+      HudModifier(hud: .init(
         backgroundColor: backgroundColor,
         interactiveHide: interactiveHide,
         animation: animation
@@ -45,18 +45,16 @@ public extension Ax where T: View {
   }
 }
 
-public final class HudManager: ObservableObject {
+public final class Hud: ObservableObject {
   
-  @Published public private(set) var isPresented = false
-  
+  @Published private(set) var isPresented = false
   @Published var contents: [HudContent<AnyHashable, AnyView>] = []
+  var currentAnimation: Animation
   
   private var defaultBackgroundColor: Color
   private var defaultInteractiveHide: Bool
   private var defaultAnimation: Animation
   private var bag = Set<AnyCancellable>()
-  
-  var currentAnimation: Animation
   
   public init(
     backgroundColor: Color,
@@ -107,7 +105,7 @@ public final class HudManager: ObservableObject {
   }
   
   public func hideAll() {
-    let currentAnimation = contents.count == 1
+    currentAnimation = contents.count == 1
     ? contents.last!.animation
     : defaultAnimation
     contents.removeAll()
@@ -131,27 +129,27 @@ public struct HudContent<ID: Hashable, C: View> {
   let backgroundColor: Color?
 }
 
-public struct HudManagerModifier: ViewModifier {
-  @StateObject public var hudManager: HudManager
+public struct HudModifier: ViewModifier {
+  @StateObject public var hud: Hud
   
   public func body(content: Content) -> some View {
     content
       .overlay {
-        hudManager.currentBackgroundColor
+        hud.currentBackgroundColor
           .ignoresSafeArea()
-          .opacity(hudManager.isPresented ? 1 : 0)
+          .opacity(hud.isPresented ? 1 : 0)
           .onTapGesture {
-            if hudManager.currentInteractiveHide {
-              hudManager.hideAll()
+            if hud.currentInteractiveHide {
+              hud.hideAll()
             }
           }
           .overlay {
-            ForEach(hudManager.contents, id: \.id) {
+            ForEach(hud.contents, id: \.id) {
               $0.content
             }
           }
       }
-      .animation(hudManager.currentAnimation, value: hudManager.contents.count)
-      .environmentObject(hudManager)
+      .animation(hud.currentAnimation, value: hud.contents.count)
+      .environmentObject(hud)
   }
 }
