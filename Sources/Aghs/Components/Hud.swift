@@ -74,7 +74,7 @@ public final class Hud: ObservableObject {
   ///   - backgroundColor: The background color of the HUD.
   ///   - interactiveHide: A Boolean value that determines whether the HUD should be hidden when a tap gesture is detected.
   ///   - animation: The animation to be used for showing and hiding the HUD.
-  public init(
+  init(
     backgroundColor: Color,
     interactiveHide: Bool,
     animation: Animation
@@ -101,6 +101,8 @@ public final class Hud: ObservableObject {
   ///   - id: A unique identifier for the HUD content.
   ///   - animation: The animation to be used for showing this HUD content.
   ///   - transition: The transition to be used for this HUD content.
+  ///   - alignment: The alignment to use for this HUD content within its parent. The default value is `.center`, which means the content will be centered in its parent.
+  ///   - ignoresSafeAreaEdges: The edges along which the safe area insets should be ignored for this HUD content. The default value is an empty set, which means that the content observes all safe area insets.
   ///   - backgroundColor: The background color for this HUD content.
   ///   - interactiveHide: A Boolean value that determines whether this HUD content should be hidden when a tap gesture is detected.
   ///   - content: The view to be displayed in this HUD content.
