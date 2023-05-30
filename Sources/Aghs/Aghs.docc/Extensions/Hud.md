@@ -1,7 +1,5 @@
 # ``Aghs/Hud``
 
-A global Hud manager.
-
 ## Topics
 
 ### Init config
