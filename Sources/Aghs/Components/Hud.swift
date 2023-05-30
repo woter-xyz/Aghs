@@ -30,12 +30,12 @@ import Combine
 
 public extension Ax where T: View {
   
-  /// Initialize a HUD with the specified configurations.
+  /// Initialize a global Hud with the specified configurations.
   /// - Parameters:
-  ///   - backgroundColor: The background color of the HUD. Default value is black with opacity of 0.5.
-  ///   - interactiveHide: A Boolean value that determines whether the HUD should be hidden when a tap gesture is detected. Default value is `false`.
-  ///   - animation: The animation to be used for showing and hiding the HUD. Default value is linear animation with a duration of 0.1 seconds.
-  /// - Returns: A `View` with the specified HUD configurations.
+  ///   - backgroundColor: The background color of the Hud. Default value is black with opacity of 0.5.
+  ///   - interactiveHide: A Boolean value that determines whether the Hud should be hidden when a tap gesture is detected. Default value is `false`.
+  ///   - animation: The animation to be used for showing and hiding the Hud. Default value is linear animation with a duration of 0.1 seconds.
+  /// - Returns: A `View` with the specified Hud configurations.
   func initHud(
     backgroundColor: Color = .black.opacity(0.5),
     interactiveHide: Bool = false,
@@ -51,7 +51,7 @@ public extension Ax where T: View {
   }
 }
 
-/// An `ObservableObject` for managing a Heads-Up Display (HUD).
+/// A global Hud manager.
 public final class Hud: ObservableObject {
   
   @Published private(set) var isPresented = false
@@ -71,10 +71,10 @@ public final class Hud: ObservableObject {
   
   /// Initialize a new `Hud` with the specified configurations.
   /// - Parameters:
-  ///   - backgroundColor: The background color of the HUD.
-  ///   - interactiveHide: A Boolean value that determines whether the HUD should be hidden when a tap gesture is detected.
-  ///   - animation: The animation to be used for showing and hiding the HUD.
-  public init(
+  ///   - backgroundColor: The background color of the Hud.
+  ///   - interactiveHide: A Boolean value that determines whether the Hud should be hidden when a tap gesture is detected.
+  ///   - animation: The animation to be used for showing and hiding the Hud.
+  init(
     backgroundColor: Color,
     interactiveHide: Bool,
     animation: Animation
@@ -96,14 +96,16 @@ public final class Hud: ObservableObject {
       .store(in: &bag)
   }
   
-  /// Show a new HUD with the specified configurations.
+  /// Show a new Hud with the specified configurations.
   /// - Parameters:
-  ///   - id: A unique identifier for the HUD content.
-  ///   - animation: The animation to be used for showing this HUD content.
-  ///   - transition: The transition to be used for this HUD content.
-  ///   - backgroundColor: The background color for this HUD content.
-  ///   - interactiveHide: A Boolean value that determines whether this HUD content should be hidden when a tap gesture is detected.
-  ///   - content: The view to be displayed in this HUD content.
+  ///   - id: A unique identifier for the Hud content.
+  ///   - animation: The animation to be used for showing this Hud content.
+  ///   - transition: The transition to be used for this Hud content.
+  ///   - alignment: The alignment to use for this Hud content within its parent. The default value is `.center`, which means the content will be centered in its parent.
+  ///   - ignoresSafeAreaEdges: The edges along which the safe area insets should be ignored for this Hud content. The default value is an empty set, which means that the content observes all safe area insets.
+  ///   - backgroundColor: The background color for this Hud content.
+  ///   - interactiveHide: A Boolean value that determines whether this Hud content should be hidden when a tap gesture is detected.
+  ///   - content: The view to be displayed in this Hud content.
   public func show<ID: Hashable, C: View>(
     id: ID = UUID(),
     animation: Animation = .default,
@@ -129,15 +131,15 @@ public final class Hud: ObservableObject {
     )
   }
   
-  /// Hide the HUD with the specified identifier.
+  /// Hide the Hud with the specified identifier.
   /// - Parameters:
-  ///   - id: The unique identifier of the HUD content to be hidden.
+  ///   - id: The unique identifier of the hud content to be hidden.
   public func hide<ID: Hashable>(id: ID) {
     currentAnimation = contents.last?.animation ?? defaultAnimation
     contents.removeAll(where: { $0.id == AnyHashable(id) })
   }
   
-  /// Hide all the contents in the HUD.
+  /// Hide all the contents in the Hud.
   public func hideAll() {
     currentAnimation = contents.count == 1
     ? contents.last!.animation
@@ -146,7 +148,7 @@ public final class Hud: ObservableObject {
   }
 }
 
-/// The content to be displayed in a Heads-Up Display (HUD).
+/// The content to be displayed in a Hud.
 public struct HudContent<ID: Hashable, C: View> {
   let id: ID
   let content: C
