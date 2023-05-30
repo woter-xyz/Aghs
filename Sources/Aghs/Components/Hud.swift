@@ -31,6 +31,20 @@ import Combine
 public extension Ax where T: View {
   
   /// Initialize a global Hud with the specified configurations.
+  ///
+  /// ```swift
+  /// @main
+  /// struct Aghs_exampleApp: App {
+  ///
+  ///   var body: some Scene {
+  ///     WindowGroup {
+  ///       HomeView()
+  ///         .ax.initHud()
+  ///     }
+  ///   }
+  /// }
+  /// ```
+  ///
   /// - Parameters:
   ///   - backgroundColor: The background color of the Hud. Default value is black with opacity of 0.5.
   ///   - interactiveHide: A Boolean value that determines whether the Hud should be hidden when a tap gesture is detected. Default value is `false`.
