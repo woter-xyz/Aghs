@@ -1,5 +1,5 @@
 //
-//  ViewFrame.swift
+//  FrameReader.swift
 //  
 //
 //  Created by zzzwco on 2022/11/16.
@@ -28,30 +28,34 @@
 import Foundation
 import SwiftUI
 
-extension Ax where T: View {
+public extension Ax where T: View {
   
-  /// Retrieve the frame of the view and call a callback function with the frame.
-  ///
-  /// - Parameter callback: A closure that takes the frame of the view as a parameter.
-  /// - Returns: The original view with a background modifier that captures the view's frame.
-  public func getFrame(_ callback: @escaping (CGRect) -> Void) -> some View {
-    base.modifier(FrameModifier(callback: callback))
+  func frameReader(
+    in coordinateSpace: CoordinateSpace = .global,
+    _ frame: @escaping (CGRect) -> Void
+  ) -> some View {
+    base.modifier(FrameReaderModifier(coordinateSpace: coordinateSpace, frame: frame))
   }
 }
 
 /// A view modifier that captures the frame of the view and calls a callback function with the frame.
-public struct FrameModifier: ViewModifier {
-  public let callback: (CGRect) -> Void
+public struct FrameReaderModifier: ViewModifier {
+  let coordinateSpace: CoordinateSpace
+  let frame: (CGRect) -> Void
   
   public func body(content: Content) -> some View {
     content
       .background(
         GeometryReader { geometryProxy in
+          let rect = geometryProxy.frame(in: coordinateSpace)
           Color.clear
-            .preference(key: FramePreferenceKey.self, value: geometryProxy.frame(in: .global))
+            .preference(key: FramePreferenceKey.self, value: rect)
+            .onAppear {
+              frame(rect)
+            }
         }
       )
-      .onPreferenceChange(FramePreferenceKey.self, perform: callback)
+      .onPreferenceChange(FramePreferenceKey.self, perform: frame)
   }
 }
 
