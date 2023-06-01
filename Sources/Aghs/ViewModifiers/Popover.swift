@@ -30,27 +30,50 @@ import Combine
 
 public extension Ax where T: View {
   
-  func popover<C: View>(isPresented: Binding<Bool>, content: @escaping () -> C) -> some View {
-    base.modifier(PopoverModifier(isPresented: isPresented, popover: content))
+  func popover<C: View>(
+    isPresented: Binding<Bool>,
+    sourceFrame: CGRect? = nil,
+    content: @escaping () -> C
+  ) -> some View {
+    base.modifier(
+      PopoverModifier(
+        isPresented: isPresented,
+        sourceFrame: sourceFrame,
+        popover: content
+      )
+    )
   }
 }
 
 public struct PopoverModifier<C: View>: ViewModifier {
   var isPresented: Binding<Bool>
+  var sourceFrame: CGRect?
   let popover: () -> C
   
   @State private var contentFrame: CGRect = .zero
   @EnvironmentObject private var hud: Hud
   
-  init(isPresented: Binding<Bool>, popover: @escaping () -> C) {
+  init(
+    isPresented: Binding<Bool>,
+    sourceFrame: CGRect?,
+    popover: @escaping () -> C
+  ) {
     self.isPresented = isPresented
+    self.sourceFrame = sourceFrame
     self.popover = popover
+    if let sourceFrame {
+      self.contentFrame = sourceFrame
+    }
   }
   
   public func body(content: Content) -> some View {
     content
       .ax.frameReader {
-        contentFrame = $0
+        if sourceFrame == nil {
+          contentFrame = $0
+        } else {
+          contentFrame = sourceFrame!
+        }
       }
       .onChange(of: isPresented.wrappedValue) { newValue in
         if newValue {
@@ -60,12 +83,14 @@ public struct PopoverModifier<C: View>: ViewModifier {
         }
       }
       .onReceive(hud.$isPresented) { output in
-        isPresented.wrappedValue = output
+        if !output {
+          isPresented.wrappedValue = output
+        }
       }
   }
   
   private func show() {
-    hud.show(transition: .opacity,  alignment: .topLeading, ignoresSafeAreaEdges: .all, backgroundColor: .white.opacity(0.00001), interactiveHide: true) {
+    hud.show(animation: .linear(duration: 0.1), transition: .opacity, alignment: .topLeading, ignoresSafeAreaEdges: .all, backgroundColor: .white.opacity(0.00001), interactiveHide: true) {
       ZStack(alignment: popoverAlignment) {
         Color.clear
           .frame(width: popoverContainerWidth, height: popoverContainerHeight)
