@@ -70,7 +70,8 @@ public extension Ax where T: View {
 @MainActor
 public final class Hud: ObservableObject {
   
-  @Published private(set) var isPresented = false
+  public var frame: CGRect = .zero
+  @Published public private(set) var isPresented = false
   @Published var contents: [HudContent<AnyHashable, AnyView>] = []
   var currentAnimation: Animation
   var currentBackgroundColor: Color
@@ -183,6 +184,9 @@ public struct HudModifier: ViewModifier {
     content
       .overlay {
         hud.currentBackgroundColor
+          .ax.frameReader {
+            hud.frame = $0
+          }
           .ignoresSafeArea()
           .opacity(hud.isPresented ? 1 : 0)
           .onTapGesture {
