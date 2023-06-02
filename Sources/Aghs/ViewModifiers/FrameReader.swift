@@ -1,5 +1,5 @@
 //
-//  ViewSize.swift
+//  FrameReader.swift
 //  
 //
 //  Created by zzzwco on 2022/11/16.
@@ -28,40 +28,49 @@
 import Foundation
 import SwiftUI
 
-extension Ax where T: View {
+public extension Ax where T: View {
   
-  /// Retrieve the size of the view and call a callback function with the size.
+  /// This function allows for reading the frame of a view within a specified coordinate space.
   ///
-  /// - Parameter callback: A closure that takes the size of the view as a parameter.
-  /// - Returns: The original view with a background modifier that captures the view's size.
-  public func getSize(_ callback: @escaping (CGSize) -> Void) -> some View {
-    base.modifier(SizeModifer(callback: callback))
+  /// > Tip: The correct frame can only be obtained after the view rendering is completed.
+  ///
+  /// - Parameters:
+  ///   - coordinateSpace: The `CoordinateSpace` in which the frame is to be read. Default is `.global`.
+  ///   - frame: A closure that takes `CGRect` as a parameter. This closure is called with the frame of the view.
+  ///
+  /// - Returns: A `View` after applying the `FrameReaderModifier`.
+  func frameReader(
+    in coordinateSpace: CoordinateSpace = .global,
+    _ frame: @escaping (CGRect) -> Void
+  ) -> some View {
+    base.modifier(FrameReaderModifier(coordinateSpace: coordinateSpace, frame: frame))
   }
 }
 
-/// A view modifier that captures the size of the view and calls a callback function with the size.
-public struct SizeModifer: ViewModifier {
-  public let callback: (CGSize) -> Void
+/// A `ViewModifier` that captures the frame of the view in the provided `CoordinateSpace`
+/// and calls the provided callback function with the frame.
+public struct FrameReaderModifier: ViewModifier {
+  let coordinateSpace: CoordinateSpace
+  let frame: (CGRect) -> Void
   
   public func body(content: Content) -> some View {
     content
       .background(
         GeometryReader { geometryProxy in
+          let rect = geometryProxy.frame(in: coordinateSpace)
           Color.clear
-            .anchorPreference(key: BoundsPreferenceKey.self, value: .bounds) {
-              geometryProxy[$0]
-            }
-            .onPreferenceChange(BoundsPreferenceKey.self) {
-              callback($0.size)
+            .preference(key: FramePreferenceKey.self, value: rect)
+            .onAppear {
+              frame(rect)
             }
         }
       )
+      .onPreferenceChange(FramePreferenceKey.self, perform: frame)
   }
 }
 
-/// A preference key for storing the view's bounds.
-public struct BoundsPreferenceKey: PreferenceKey {
-  
+/// A `PreferenceKey` for storing the frame of a view.
+public struct FramePreferenceKey: PreferenceKey {
   public static var defaultValue: CGRect = .zero
   
   public static func reduce(value: inout CGRect, nextValue: () -> CGRect) {

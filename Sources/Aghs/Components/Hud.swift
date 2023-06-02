@@ -50,6 +50,7 @@ public extension Ax where T: View {
   ///   - interactiveHide: A Boolean value that determines whether the Hud should be hidden when a tap gesture is detected. Default value is `false`.
   ///   - animation: The animation to be used for showing and hiding the Hud. Default value is linear animation with a duration of 0.1 seconds.
   /// - Returns: A `View` with the specified Hud configurations.
+  @MainActor
   func initHud(
     backgroundColor: Color = .black.opacity(0.5),
     interactiveHide: Bool = false,
@@ -66,14 +67,14 @@ public extension Ax where T: View {
 }
 
 /// A global Hud manager.
+@MainActor
 public final class Hud: ObservableObject {
   
-  @Published private(set) var isPresented = false
+  public var frame: CGRect = .zero
+  @Published public private(set) var isPresented = false
   @Published var contents: [HudContent<AnyHashable, AnyView>] = []
   var currentAnimation: Animation
-  var currentBackgroundColor: Color {
-    contents.last?.backgroundColor ?? defaultBackgroundColor
-  }
+  var currentBackgroundColor: Color
   var currentInteractiveHide: Bool {
     contents.last?.interactiveHide ?? defaultInteractiveHide
   }
@@ -97,6 +98,7 @@ public final class Hud: ObservableObject {
     self.defaultInteractiveHide = interactiveHide
     self.defaultAnimation = animation
     self.currentAnimation = animation
+    self.currentBackgroundColor = backgroundColor
     
     $contents
       .map { !$0.isEmpty }
@@ -131,6 +133,7 @@ public final class Hud: ObservableObject {
     content: () -> C
   ) {
     currentAnimation = animation
+    currentBackgroundColor = backgroundColor ?? defaultBackgroundColor
     contents.append(
       HudContent(
         id: id,
@@ -181,6 +184,9 @@ public struct HudModifier: ViewModifier {
     content
       .overlay {
         hud.currentBackgroundColor
+          .ax.frameReader {
+            hud.frame = $0
+          }
           .ignoresSafeArea()
           .opacity(hud.isPresented ? 1 : 0)
           .onTapGesture {
@@ -195,8 +201,8 @@ public struct HudModifier: ViewModifier {
                 .ignoresSafeArea(.all, edges: $0.ignoresSafeAreaEdges)
             }
           }
+          .animation(hud.currentAnimation, value: hud.contents.count)
       }
-      .animation(hud.currentAnimation, value: hud.contents.count)
       .environmentObject(hud)
   }
 }
