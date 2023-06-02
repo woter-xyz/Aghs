@@ -30,6 +30,18 @@ import Combine
 
 public extension Ax where T: View {
   
+  /// This function displays a popover with the given content.
+  ///
+  /// > Important: This feature depends on the ``Hud``.
+  /// Please make sure that the hud instance has been environmented by
+  ///  ``Ax/initHud(backgroundColor:interactiveHide:animation:)``.
+  ///
+  /// - Parameters:
+  ///   - isPresented: A `Binding` that determines if the popover is presented or not.
+  ///   - sourceFrame: An optional `CGRect` that represents the frame of the source view.
+  ///   - content: A closure that returns the content of the popover.
+  ///
+  /// - Returns: A `View` that contains the popover when `isPresented` is true.
   func popover<C: View>(
     isPresented: Binding<Bool>,
     sourceFrame: CGRect? = nil,
@@ -45,6 +57,7 @@ public extension Ax where T: View {
   }
 }
 
+/// A `ViewModifier` that displays a popover when `isPresented` is true.
 public struct PopoverModifier<C: View>: ViewModifier {
   var isPresented: Binding<Bool>
   var sourceFrame: CGRect?

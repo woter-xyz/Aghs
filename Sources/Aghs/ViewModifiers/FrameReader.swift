@@ -30,6 +30,15 @@ import SwiftUI
 
 public extension Ax where T: View {
   
+  /// This function allows for reading the frame of a view within a specified coordinate space.
+  ///
+  /// > Tip: The correct frame can only be obtained after the view rendering is completed.
+  ///
+  /// - Parameters:
+  ///   - coordinateSpace: The `CoordinateSpace` in which the frame is to be read. Default is `.global`.
+  ///   - frame: A closure that takes `CGRect` as a parameter. This closure is called with the frame of the view.
+  ///
+  /// - Returns: A `View` after applying the `FrameReaderModifier`.
   func frameReader(
     in coordinateSpace: CoordinateSpace = .global,
     _ frame: @escaping (CGRect) -> Void
@@ -38,7 +47,8 @@ public extension Ax where T: View {
   }
 }
 
-/// A view modifier that captures the frame of the view and calls a callback function with the frame.
+/// A `ViewModifier` that captures the frame of the view in the provided `CoordinateSpace`
+/// and calls the provided callback function with the frame.
 public struct FrameReaderModifier: ViewModifier {
   let coordinateSpace: CoordinateSpace
   let frame: (CGRect) -> Void
@@ -59,7 +69,7 @@ public struct FrameReaderModifier: ViewModifier {
   }
 }
 
-/// A preference key for storing the view's frame.
+/// A `PreferenceKey` for storing the frame of a view.
 public struct FramePreferenceKey: PreferenceKey {
   public static var defaultValue: CGRect = .zero
   

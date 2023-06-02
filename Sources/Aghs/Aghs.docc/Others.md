@@ -26,8 +26,11 @@ A set of components used internally within the package. Typically, there is no n
 - ``Aghs/RectCorner``
 
 ### Retrieve the size of the view
-- ``Aghs/SizeModifer``
-- ``Aghs/BoundsPreferenceKey``
+- ``Aghs/FrameReaderModifier``
+- ``Aghs/FramePreferenceKey``
+
+### Popover
+- ``Aghs/PopoverModifier``
 
 ### Others
 - ``Aghs/PreviewDevices``
