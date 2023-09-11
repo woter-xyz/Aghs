@@ -63,8 +63,23 @@ public class ViewStatusManager: ObservableObject {
   @Published public var isEnabled: Bool = true
   @Published public var isLoading: Bool = false
   @Published public var isEmpty: Bool = false
-  @Published public var isToast: Bool = false
   @Published public var toast: String = ""
+  @Published public var isToast: Bool = false {
+    didSet {
+      toastTimer?.cancel()
+      
+      if isToast {
+        let timer = DispatchWorkItem {
+          self.isToast = false
+        }
+        
+        self.toastTimer = timer
+        DispatchQueue.main.asyncAfter(deadline: .now() + toastDuration, execute: timer)
+      }
+    }
+  }
+  
+  private var toastTimer: DispatchWorkItem?
   
   /// Initialize a new instance of `ViewStatusManager`.
   ///
@@ -137,13 +152,6 @@ public struct ToastModifier<C: View>: ViewModifier {
           statusView()
             .zIndex(999999)
             .transition(status.transition)
-            .onAppear {
-              DispatchQueue.main.asyncAfter(
-                deadline: .now() + status.toastDuration
-              ) {
-                status.isToast = false
-              }
-            }
         }
       }
       .animation(.default, value: status.isToast)
